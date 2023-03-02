@@ -3,6 +3,7 @@
     "name": "app-drivers-cbva",
     "slug": "app-drivers-cbva",
     "version": "1.0.0",
+    "primaryColor": "#cccccc",
     "assetBundlePatterns": [
       "**/*"
     ]
