@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "app-drivers-cbva",
+    "slug": "app-drivers-cbva",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "app-drivers-cbva"
+}
