@@ -59,7 +59,7 @@ export default function App() {
                     </View>
                 <Divider />
                 <Text style={styles.horizontalText}>
-                    Cuenta con Registro adecuado y vigente
+                    Cuenta con Registro adecuado y vigente fancy o no
                 </Text>
                 <Divider width={5} color={theme?.colors?.primary} />
             </View>

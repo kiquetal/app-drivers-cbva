@@ -6,7 +6,18 @@
     "primaryColor": "#cccccc",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.anonymous.appdriverscbva"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.appdriverscbva"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3347f001-a14d-4d85-8c47-dde9dd06f65d"
+      }
+    }
   },
   "name": "app-drivers-cbva"
 }
