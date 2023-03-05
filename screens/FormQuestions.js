@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {ScrollView, View} from "react-native";
+import {ScrollView, View, StyleSheet} from "react-native";
 import {Button, Input, Overlay, Text} from "@rneui/base";
 import { useForm, Controller} from "react-hook-form";
 import {CheckBox} from "@rneui/themed";
 import {useState} from "react";
+import Question from "./Question";
 
 export default FormQuestions = (props) => {
 
@@ -98,101 +99,38 @@ export default FormQuestions = (props) => {
 
     return (
         <ScrollView>
-            <View >
-            <Text>Question 1</Text>
-                <View >
-                    <View style={{backgroundColor:'white', flex:1, flexDirection:'row', justifyContent:'center' }}>
-         <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
-                <CheckBox title={"Yes"}
-                 checked={value}
-                          height={50}
-
-                  style={{backgroundColor: 'blue'}}
-
-                 onPress={()=> onChange(!value)}
-                          checkedColor={"#000"}
-                          style={{marginBottom: 0}}
-                />
-             )
-         } name={"section1_question1_answer_yes"} control={control} defaultValue={""}
-         />
-            <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
-                <CheckBox title={"No"}
-                          checked={value}
-                          onPress={()=> onChange(!value)}
-                          height={50}
-                          checkedColor={"#000"} style={{marginTop: 0}}
-                />
-            )
-            } name={"section1_question1_answer_no"} control={control} defaultValue={""}
-
-            />
-                <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
-                    <CheckBox title={"N/A"}
-                              height={50}
-                              checked={value}
-                              onPress={()=> onChange(!value)}
-                              checkedColor={"#000"} style={{marginTop: 0}}
-                    />
-                )
-                } name={"section1_question1_answer_na"} control={control} defaultValue={""}
-
-                />
-                    </View>
-            <Controller render={({field:{onChange,value}})=>(
-                <Input
-                multiline={true}
-                    numberOfLines={1}
-                    placeholder={"Notas"}
-                 onChangeText={value => onChange(value)}
-                />
-            )} name={"section1_question1_answer_notes"} control={control} defaultValue={""} />
-                </View>
-                <Text>Question 2</Text>
-
-                <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
-                    <CheckBox title={"Yes"}
-                              checked={value}
-                              onPress={()=> onChange(!value)}
-                              checkedColor={"#000"}
-                              style={{marginBottom: 0}}
-                    />
-                )
-                } name={"section1_question2_answer_yes"} control={control} defaultValue={""}
-                />
-                <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
-                    <CheckBox title={"No"}
-                              checked={value}
-                              onPress={()=> onChange(!value)}
-                              checkedColor={"#000"} style={{marginTop: 0}}
-                    />
-                )
-                } name={"section1_question2_answer_no"} control={control} defaultValue={""}
-
-                />
-                <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
-                    <CheckBox title={"N/A"}
-                              checked={value}
-                              onPress={()=> onChange(!value)}
-                              checkedColor={"#000"} style={{marginTop: 0}}
-                    />
-                )
-                } name={"section1_question2_answer_na"} control={control} defaultValue={""}
-
-                />
-
-                <Controller render={({field:{onChange,value}})=>(
-                    <Input
-                        multiline={true}
-                        numberOfLines={4}
-                        placeholder={"Notas"}
-                        onChangeText={value => onChange(value)}
-                    />
-                )} name={"section1_question2_answer_notes"} control={control} defaultValue={""} />
-
+            <View>
+                <Text style={styles.section}>Section 1</Text>
+                 <Text style={styles.question}>Question 1</Text>
+                <Question control={control} section={"section1"} question="question1"  />
+                <Text style={styles.question}>Question 2</Text>
+               <Question control={control} section={"section1"} question="question2"  />
             <Button title="Submit" onPress={handleSubmit(onSubmit)} />
             </View>
         </ScrollView>
 
     )
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+     question: {
+        backgroundColor: 'purple',
+        color: 'white',
+        padding: 10,
+        fontSize: 11,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    section: {
+        backgroundColor: 'blue',
+        color: 'white',
+        padding: 10,
+    }
+})
+
