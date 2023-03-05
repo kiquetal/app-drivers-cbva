@@ -14,6 +14,8 @@ const Home = (props) =>  {
              onPress={()=> navigation.navigate('Questionaries')}></Button>
             <Button title={'Sign out'}
                     onPress={()=> authContext.signOut()}></Button>
+            <Button title={'FormQuestions'}
+                    onPress={()=> navigation.navigate('FormQuestions')}></Button>
         </View>
 
 

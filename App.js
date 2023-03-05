@@ -11,6 +11,7 @@ import Questionaries from "./screens/Questionaries";
 import * as SecureStore from "expo-secure-store";
 import LoginScreen from "./screens/LoginScreen";
 import {supabase} from "./lib/supabase";
+import FormQuestions from "./screens/FormQuestions";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -48,14 +49,16 @@ export default function App() {
                     }
                 case 'IDENTITY':
                     return {
-                        ...prevState,
+                        ...state,
+                        userToken: action.userToken,
+
                     }
             }
         },
         {
             isLoading: true,
             isSignout: false,
-            userToken: null,
+            userToken: "1",
             error:null,
             user:''
         }
@@ -65,6 +68,7 @@ export default function App() {
         // Fetch the token from storage then navigate to our appropriate place
         const bootstrapAsync = async () => {
             let userToken;
+
 
             try {
                 userToken = await SecureStore.getItemAsync('userToken');
@@ -76,7 +80,7 @@ export default function App() {
 
             // This will switch to the App screen or Auth screen and this loading
             // screen will be unmounted and thrown away.
-            dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+            dispatch({"type":"IDENTITY", userToken:"a"})
         };
 
         bootstrapAsync();
@@ -112,13 +116,14 @@ export default function App() {
         <AuthContext.Provider value={ {authContext, state} } >
               <NavigationContainer>
                 <Stack.Navigator>
-                    { console.log(`state-navigator`,state.error)}
+                    { console.log(`state-navigator`,state.userToken)}
                     { state.userToken == null ? (
                          <Stack.Screen name={"Login"} component={LoginScreen}   options={{ headerShown: true }} />
 
                     ):( <>
                         <Stack.Screen name={"Home"} component={HomeScreen} options={{ headerShown: false }} />
                         <Stack.Screen name={"Questionaries"} component={Questionaries} options={{ headerShown: true }} />
+                         <Stack.Screen name={"FormQuestions"} component={FormQuestions} options={{ headerShown: true }} />
                         </>
                         )}
 
