@@ -1,19 +1,58 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, Modal, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import {CheckBox, useTheme} from '@rneui/themed';
 import {Button, Divider} from "@rneui/base";
-
+import { REACT_APP_DEV_MODE , REACT_APP_PROD_MODE} from '@env';
 const { width } = Dimensions.get("window");
-
+import {supabase} from "./lib/supabase";
 export default function App() {
     const { theme, updateTheme } = useTheme();
     const [checked, setChecked] = React.useState(true);
     const toggleCheckbox = () => setChecked(!checked);
     const [isModalVisible, setModalVisible] = useState(false);
-
+    console.log(REACT_APP_PROD_MODE);
     // This is to manage TextInput State
     const [inputValue, setInputValue] = useState("");
+
+    const [ user, setUser ] = useState(null);
+    useEffect( () => {
+
+        const trySigUp = async () => {
+            let {data, error} = await supabase.auth.signInWithPassword({
+               email: 'kiquetal+invite2@gmail.com',
+          //      email:'kiquetal+2@gmail.com',
+                password:"12345678"
+            })
+
+            setUser(data.user.email)
+            console.log(data.user.id)
+           let{ data: questions,  error: e } = await
+               supabase
+                  .from('sections')
+                   .select(`name_section,questions(question)` );
+            console.log(JSON.stringify(questions))
+
+       /*   let { data: q, error: er } =   await  supabase.
+          from('questionaries').insert({
+              'user_id': data.user.id,
+              'form_id': 1
+          }).select('user_id,form_id');
+       */
+       // console.log(JSON.stringify(q));
+
+        let { data: all_questionares, error: err } = await supabase
+            .from('questionaries')
+            .select(`id`);
+
+
+      //  console.log(JSON.stringify(er));
+        console.log(JSON.stringify(all_questionares));
+
+        }
+        trySigUp();
+    }, []);
+
 
     // Create toggleModalVisibility function that will
     // Open and close modal upon button clicks.
@@ -22,7 +61,7 @@ export default function App() {
     };
     return (
         <ScrollView>
-            <Text style={styles.subHeader}>OPERADOR</Text>
+            <Text style={styles.subHeader}>OPERADOR {user}</Text>
             <View style={styles.horizontal}>
                 <Text style={styles.horizontalText}>Dispone de EPI</Text>
                 <Divider />
