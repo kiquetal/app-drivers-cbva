@@ -1,196 +1,131 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useEffect, useState} from 'react';
-import {Dimensions, Modal, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
-import {CheckBox, useTheme} from '@rneui/themed';
-import {Button, Divider} from "@rneui/base";
-import { REACT_APP_DEV_MODE , REACT_APP_PROD_MODE} from '@env';
+import React, {useEffect} from 'react';
+import {Dimensions, StyleSheet} from 'react-native';
 const { width } = Dimensions.get("window");
+import { AuthContext} from "./contexts/AuthContext";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import HomeScreen from "./screens/Home";
+import Questionaries from "./screens/Questionaries";
+import * as SecureStore from "expo-secure-store";
+import LoginScreen from "./screens/LoginScreen";
 import {supabase} from "./lib/supabase";
+const Stack = createNativeStackNavigator();
+
 export default function App() {
-    const { theme, updateTheme } = useTheme();
-    const [checked, setChecked] = React.useState(true);
-    const toggleCheckbox = () => setChecked(!checked);
-    const [isModalVisible, setModalVisible] = useState(false);
-    console.log(REACT_APP_PROD_MODE);
-    // This is to manage TextInput State
-    const [inputValue, setInputValue] = useState("");
+    const [state, dispatch] = React.useReducer(
+        (prevState, action) => {
+            switch (action.type) {
+                case 'RESTORE_TOKEN':
+                    return {
+                        ...prevState,
+                        userToken: action.token,
+                        isLoading: false,
+                        error:null
+                    };
+                case 'SIGN_IN':
+                    return {
+                        ...prevState,
+                        isSignout: false,
+                        userToken: action.token,
+                        error:null,
+                        user:action.user
+                    };
+                case 'SIGN_OUT':
+                    return {
+                        ...prevState,
+                        isSignout: true,
+                        userToken: null,
+                        error:null
+                    };
+               case 'ERROR_LOGIN':
+                    return {
+                        ...prevState,
+                        error: action.error,
+                        isLoading: false,
 
-    const [ user, setUser ] = useState(null);
-    useEffect( () => {
-
-        const trySigUp = async () => {
-            let {data, error} = await supabase.auth.signInWithPassword({
-               email: 'kiquetal+invite2@gmail.com',
-          //      email:'kiquetal+2@gmail.com',
-                password:"12345678"
-            })
-
-            setUser(data.user.email)
-            console.log(data.user.id)
-           let{ data: questions,  error: e } = await
-               supabase
-                  .from('sections')
-                   .select(`name_section,questions(question)` );
-            console.log(JSON.stringify(questions))
-
-       /*   let { data: q, error: er } =   await  supabase.
-          from('questionaries').insert({
-              'user_id': data.user.id,
-              'form_id': 1
-          }).select('user_id,form_id');
-       */
-       // console.log(JSON.stringify(q));
-
-        let { data: all_questionares, error: err } = await supabase
-            .from('questionaries')
-            .select(`id`);
-
-
-      //  console.log(JSON.stringify(er));
-        console.log(JSON.stringify(all_questionares));
-
+                    }
+                case 'IDENTITY':
+                    return {
+                        ...prevState,
+                    }
+            }
+        },
+        {
+            isLoading: true,
+            isSignout: false,
+            userToken: null,
+            error:null,
+            user:''
         }
-        trySigUp();
+    );
+
+    React.useEffect(() => {
+        // Fetch the token from storage then navigate to our appropriate place
+        const bootstrapAsync = async () => {
+            let userToken;
+
+            try {
+                userToken = await SecureStore.getItemAsync('userToken');
+            } catch (e) {
+                // Restoring token failed
+            }
+
+            // After restoring token, we may need to validate it in production apps
+
+            // This will switch to the App screen or Auth screen and this loading
+            // screen will be unmounted and thrown away.
+            dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+        };
+
+        bootstrapAsync();
     }, []);
 
+    const authContext = React.useMemo(
+        () => ({
+            signIn: async (data) => {
+                console.log("signIn called")
+                 let {data: user, error} = await supabase.auth.signInWithPassword({
+                    email: data.email,
+                    password: data.password
+                });
+                if (error) {
+                    console.log(`error credentials`,error);
+                    dispatch({type:'ERROR_LOGIN', error:error.message.toString()});
+                }
+                else
+                    dispatch({ type: 'SIGN_IN', token: user.session.access_token ,  user: user.user.email});
+            },
+            signOut: () => dispatch({ type: 'SIGN_OUT' }),
+            signUp: async (data) => {
+                dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+            },
 
-    // Create toggleModalVisibility function that will
-    // Open and close modal upon button clicks.
-    const toggleModalVisibility = () => {
-        setModalVisible(!isModalVisible);
-    };
+        }),
+        []
+    );
+
+
+
     return (
-        <ScrollView>
-            <Text style={styles.subHeader}>OPERADOR {user}</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>Dispone de EPI</Text>
-                <Divider />
+        <AuthContext.Provider value={ {authContext, state} } >
+              <NavigationContainer>
+                <Stack.Navigator>
+                    { console.log(`state-navigator`,state.error)}
+                    { state.userToken == null ? (
+                         <Stack.Screen name={"Login"} component={LoginScreen}   options={{ headerShown: true }} />
 
-                <View style={
-                    {
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
-                        alignItems: 'center',
-                    }
-                }>
-                <CheckBox title="SI" />
-                <CheckBox title="NO"/>
-                 <CheckBox title="N/A"/>
-                    <Button title="Comentarios" onPress={toggleModalVisibility} />
-                    <Modal animationType="slide"
-                           transparent visible={isModalVisible}
-                           presentationStyle="overFullScreen"
-                           onDismiss={toggleModalVisibility}>
-                        <View style={styles.viewWrapper}>
-                            <View style={styles.modalView}>
-                                <TextInput placeholder="Comentarios.."
-                                           multiline={true}
-                                             numberOfLines={4}
-                                           value={inputValue} style={styles.textInput}
-                                           onChangeText={(value) =>  setInputValue(value)} />
+                    ):( <>
+                        <Stack.Screen name={"Home"} component={HomeScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name={"Questionaries"} component={Questionaries} options={{ headerShown: true }} />
+                        </>
+                        )}
 
-                                {/** This button is responsible to close the modal */}
-                                <Button title="Close" onPress={toggleModalVisibility} />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </AuthContext.Provider>
 
-                            </View>
-                        </View>
-                    </Modal>
-                    </View>
-                <Divider />
-                <Text style={styles.horizontalText}>
-                    Cuenta con Registro adecuado y vigente fancy o no
-                </Text>
-                <Divider width={5} color={theme?.colors?.primary} />
-            </View>
-            <Text style={styles.subHeader}>Horizontal Divider with Inset</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>
-                    Horizontal Divider with left inset
-                </Text>
-                <Divider inset={true} />
-                <Text style={styles.horizontalText}>
-                    Horizontal Divider with right inset
-                </Text>
-                <Divider inset={true} insetType="right" />
-                <Text style={styles.horizontalText}>
-                    Horizontal Divider with middle inset
-                </Text>
-                <Divider inset={true} insetType="middle" />
-                <Text style={styles.horizontalText}>Welcome to RNE App</Text>
-            </View>
-            <Text style={styles.subHeader}>Vertical Dividers</Text>
-            <View style={styles.vertical}>
-                <Text>Left text</Text>
-                <Divider orientation="vertical" />
-                <Text>Right text</Text>
-            </View>
-            <View style={styles.vertical}>
-                <Text>Left text</Text>
-                <Divider orientation="vertical" width={5} />
-                <Text>Right text</Text>
-            </View>
-            <Text style={styles.subHeader}>Dividers with SubHeader</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>Left text</Text>
-                <Divider
-                    subHeader="Divider"
-                    inset={true}
-                    subHeaderStyle={{ color: theme?.colors?.primary }}
-                />
-                <Text style={styles.horizontalText}>Right text</Text>
-            </View>
-            <Text style={styles.subHeader}>Dividers with SubHeader</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>Left text</Text>
-                <Divider
-                    subHeader="Divider"
-                    inset={true}
-                    subHeaderStyle={{ color: theme?.colors?.primary }}
-                />
-                <Text style={styles.horizontalText}>Right text</Text>
-            </View>
-            <Text style={styles.subHeader}>Dividers with SubHeader</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>Left text</Text>
-                <Divider
-                    subHeader="Divider"
-                    inset={true}
-                    subHeaderStyle={{ color: theme?.colors?.primary }}
-                />
-                <Text style={styles.horizontalText}>Right text</Text>
-            </View>
-            <Text style={styles.subHeader}>Dividers with SubHeader</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>Left text</Text>
-                <Divider
-                    subHeader="Divider"
-                    inset={true}
-                    subHeaderStyle={{ color: theme?.colors?.primary }}
-                />
-                <Text style={styles.horizontalText}>Right text</Text>
-            </View>
-            <Text style={styles.subHeader}>Dividers with SubHeader</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>Left text</Text>
-                <Divider
-                    subHeader="Divider"
-                    inset={true}
-                    subHeaderStyle={{ color: theme?.colors?.primary }}
-                />
-                <Text style={styles.horizontalText}>Right text</Text>
-            </View>
-            <Text style={styles.subHeader}>Dividers with SubHeader</Text>
-            <View style={styles.horizontal}>
-                <Text style={styles.horizontalText}>Left text</Text>
-                <Divider
-                    subHeader="Divider"
-                    inset={true}
-                    subHeaderStyle={{ color: theme?.colors?.primary }}
-                />
-                <Text style={styles.horizontalText}>Right text</Text>
-            </View>
-
-        </ScrollView>
   );
 }
 const styles = StyleSheet.create({
