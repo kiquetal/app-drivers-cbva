@@ -58,7 +58,7 @@ export default function App() {
         {
             isLoading: true,
             isSignout: false,
-            userToken: "1",
+            userToken: null,
             error:null,
             user:''
         }
@@ -80,7 +80,7 @@ export default function App() {
 
             // This will switch to the App screen or Auth screen and this loading
             // screen will be unmounted and thrown away.
-            dispatch({"type":"IDENTITY", userToken:"a"})
+         //   dispatch({"type":"IDENTITY", userToken:"a"})
         };
 
         bootstrapAsync();

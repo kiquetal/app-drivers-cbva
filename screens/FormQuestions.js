@@ -3,8 +3,9 @@ import {ScrollView, View, StyleSheet} from "react-native";
 import {Button, Input, Overlay, Text} from "@rneui/base";
 import { useForm, Controller} from "react-hook-form";
 import {CheckBox} from "@rneui/themed";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Question from "./Question";
+import {supabase} from "../lib/supabase";
 
 export default FormQuestions = (props) => {
 
@@ -12,7 +13,28 @@ export default FormQuestions = (props) => {
 
     const { navigation } = props;
 
+    const [sections, setSections] = useState([])
 
+    useEffect(() => {
+        const readDatabase = async () => {
+            const {data, error} = await supabase
+                .from('sections')
+                .select(`*, questions(question,id )`)
+                .order('id', {ascending: true})
+
+            if (data) {
+                console.log(JSON.stringify(data))
+
+                setSections(data)
+
+            }
+            if (error) {
+                console.log(error)
+            }
+        }
+        readDatabase()
+
+    }, [navigation])
 
 
     function onSubmit(data) {
@@ -100,11 +122,31 @@ export default FormQuestions = (props) => {
     return (
         <ScrollView>
             <View>
+                {sections.map((section) => {
+                    return (<>
+                        <Text style={styles.section}>${section.name}</Text>
+                          {section.questions.map((question) => {
+                             return(
+                                 <>
+                                 <Text style={styles.question}>${question.question}</Text>
+                                    <Question control={control} section={section.id} question={question.id}  />
+                                    </>
+                             )
+                          })}
+                    </>)
+                })
+                }
+                <!--
                 <Text style={styles.section}>Section 1</Text>
                  <Text style={styles.question}>Question 1</Text>
                 <Question control={control} section={"section1"} question="question1"  />
                 <Text style={styles.question}>Question 2</Text>
                <Question control={control} section={"section1"} question="question2"  />
+                <Text style={styles.question}>Question 3</Text>
+                <Question control={control} section={"section1"} question="question3"  />
+                <Text style={styles.question}>Question 4</Text>
+                <Question control={control} section={"section1"} question="question4"  />
+                -->
             <Button title="Submit" onPress={handleSubmit(onSubmit)} />
             </View>
         </ScrollView>
