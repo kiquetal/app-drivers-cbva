@@ -21,11 +21,14 @@ export default FormQuestions = (props) => {
                 .from('sections')
                 .select(`*, questions(question,id )`)
                 .order('id', {ascending: true})
+                .order('id',{foreignTable: 'questions', ascending: true})
 
             if (data) {
                 console.log(JSON.stringify(data))
 
-                setSections(data)
+                const onlySectionWithQuestions = data.filter((section) => section.questions.length > 0)
+                console.log(JSON.stringify(onlySectionWithQuestions))
+                setSections(onlySectionWithQuestions)
 
             }
             if (error) {
@@ -41,7 +44,6 @@ export default FormQuestions = (props) => {
 
         let sectionsObject = {}
         Object.keys(data).forEach((key) => {
-
             let section = key.split("_")[0];
             section = section.split("section")[1];
             let question = key.split("_")[1];
@@ -53,9 +55,7 @@ export default FormQuestions = (props) => {
             }
 
            if ( data[key] !== false && data[key] !== "" ) {
-               console.log(key)
-               console.log(section, question, data[key])
-               console.log(`answer-for`, answer)
+
                if (answer != "notes")
                sectionsObject[section]["questions"].push({question:question, answer:answer})
                else
@@ -64,7 +64,7 @@ export default FormQuestions = (props) => {
 
         });
         console.log(JSON.stringify(sectionsObject))
-
+        console.log("-------")
         let quetionsBySections = {}
 
         Object.keys(sectionsObject).forEach((key) => {
@@ -96,7 +96,6 @@ export default FormQuestions = (props) => {
         console.log(JSON.stringify(quetionsBySections))
 
         Object.keys(quetionsBySections).forEach((key) => {
-            console.log(`section-${key}`)
             Object.keys(quetionsBySections[key]).forEach((question) => {
               console.log(`section-${key} ${question}`)
                 let answers = '';
@@ -124,29 +123,19 @@ export default FormQuestions = (props) => {
             <View>
                 {sections.map((section) => {
                     return (<>
-                        <Text style={styles.section}>${section.name}</Text>
+                        <Text key={section.id}  style={styles.section}>{section.name_section}</Text>
                           {section.questions.map((question) => {
                              return(
                                  <>
-                                 <Text style={styles.question}>${question.question}</Text>
-                                    <Question control={control} section={section.id} question={question.id}  />
+                                 <Text key={`${question.id}_${section.id}_title`} style={styles.question}>{question.question}</Text>
+                                    <Question key={`${question.id}_${section.id}`} control={control} section={`section${section.id}`} question={`question${question.id}`}  />
                                     </>
                              )
                           })}
                     </>)
                 })
                 }
-                <!--
-                <Text style={styles.section}>Section 1</Text>
-                 <Text style={styles.question}>Question 1</Text>
-                <Question control={control} section={"section1"} question="question1"  />
-                <Text style={styles.question}>Question 2</Text>
-               <Question control={control} section={"section1"} question="question2"  />
-                <Text style={styles.question}>Question 3</Text>
-                <Question control={control} section={"section1"} question="question3"  />
-                <Text style={styles.question}>Question 4</Text>
-                <Question control={control} section={"section1"} question="question4"  />
-                -->
+
             <Button title="Submit" onPress={handleSubmit(onSubmit)} />
             </View>
         </ScrollView>
