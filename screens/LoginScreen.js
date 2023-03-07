@@ -2,9 +2,8 @@ import * as React from 'react';
 
 import { AuthContext } from '../contexts/AuthContext';
 import {View, Text} from "react-native";
-import {Button, Input} from "@rneui/base";
+import {Button, Input} from "@rneui/themed";
 import {useTheme} from "@rneui/themed";
-import {useEffect} from "react";
 
 export default LoginScreen = (props) => {
 
@@ -14,11 +13,15 @@ export default LoginScreen = (props) => {
 
 
   const { theme, updateTheme } = useTheme();
+
+
+
   return (
     <View>
-        {console.log(`my message ${state.error}`)}
-      <Input theme={theme} placeholder={'Email'} onChangeText={(text)=> setEmail(text)}  />
-      <Input theme={theme} placeholder={'Password'}  onChangeText={(text)=>setPassword(text)} secureTextEntry={true}/>
+        { state.error && <Text style={{color:'red',
+                                    alignContent:'center'}} >{state.error}</Text>}
+      <Input style={{color:'black'}} placeholder={'Email'} onChangeText={(text)=> setEmail(text)}   />
+      <Input  style={{color:'black'}} placeholder={'Password'}  onChangeText={(text)=>setPassword(text)} secureTextEntry={true}/>
       <Button
         title={'Sign in'}
         onPress={() => authContext.signIn({

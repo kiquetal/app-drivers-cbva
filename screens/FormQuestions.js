@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
 
      question: {
-        backgroundColor: 'purple',
+        backgroundColor: 'indigo',
         color: 'white',
         padding: 10,
         fontSize: 11,

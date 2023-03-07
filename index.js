@@ -11,7 +11,7 @@ const theme = createTheme({
     darkColors: {
         primary: '#000',
     },
-    mode: 'light',
+    mode: 'dark',
 });
 const App2 = () => (
     <ThemeProvider theme={theme}>

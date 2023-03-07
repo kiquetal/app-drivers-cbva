@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import {Controller} from "react-hook-form";
-import {CheckBox} from "@rneui/themed";
+import {CheckBox} from "@rneui/base";
 import {Input} from "@rneui/base";
 
 

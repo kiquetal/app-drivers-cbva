@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
-import {Button} from "@rneui/base";
+import {Button} from "@rneui/themed";
 import {AuthContext} from "../contexts/AuthContext";
 const Home = (props) =>  {
 
