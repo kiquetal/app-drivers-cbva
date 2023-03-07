@@ -2,7 +2,6 @@ import * as React from 'react';
 import {ScrollView, View, StyleSheet} from "react-native";
 import {Button, Input, Overlay, Text} from "@rneui/base";
 import { useForm, Controller} from "react-hook-form";
-import {CheckBox} from "@rneui/themed";
 import {useEffect, useState} from "react";
 import Question from "./Question";
 import {supabase} from "../lib/supabase";
@@ -118,21 +117,22 @@ export default FormQuestions = (props) => {
 
     }
 
+    let index = 0;
     return (
         <ScrollView>
             <View>
                 {sections.map((section) => {
-                    return (<>
-                        <Text key={section.id}  style={styles.section}>{section.name_section}</Text>
+                    return (<React.Fragment key={`${index++}_section`}>
+                        <Text key={`${section.id}_${index++}_title`} style={styles.section}>{section.name_section}</Text>
                           {section.questions.map((question) => {
                              return(
-                                 <>
-                                 <Text key={`${question.id}_${section.id}_title`} style={styles.question}>{question.question}</Text>
-                                    <Question key={`${question.id}_${section.id}`} control={control} section={`section${section.id}`} question={`question${question.id}`}  />
-                                    </>
+                                 <React.Fragment key={`${section}_${question.id}_question`}>
+                                      <Text key={`${question.id}_${section.id}_title`} style={styles.question}>{question.question}</Text>
+                                      <Question key={`${question.id}_${section.id}`} control={control} section={`section${section.id}`} question={`question${question.id}`}  />
+                                    </React.Fragment>
                              )
                           })}
-                    </>)
+                    </React.Fragment>)
                 })
                 }
 
