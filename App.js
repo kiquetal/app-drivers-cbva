@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from "./screens/Home";
+import HistoryScreen from "./screens/HistoryScreen";
 import Questionaries from "./screens/Questionaries";
 import * as SecureStore from "expo-secure-store";
 import LoginScreen from "./screens/LoginScreen";
@@ -122,7 +123,7 @@ export default function App() {
 
                     ):( <>
                         <Stack.Screen name={"Home"} component={HomeScreen} options={{ headerShown: false }} />
-                        <Stack.Screen name={"Questionaries"} component={Questionaries} options={{ headerShown: true }} />
+                        <Stack.Screen name={"Questionaries"} component={HistoryScreen} options={{ headerShown: true }} />
                          <Stack.Screen name={"FormQuestions"} component={FormQuestions} options={{ headerShown: true }} />
                         </>
                         )}

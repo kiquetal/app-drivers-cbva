@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ScrollView, View, StyleSheet} from "react-native";
-import {Button, Input, Overlay, Text} from "@rneui/base";
+import {Button, Dialog, Input, Overlay, Text} from "@rneui/themed";
 import { useForm, Controller} from "react-hook-form";
 import {useEffect, useState} from "react";
 import Question from "./Question";
@@ -13,6 +13,7 @@ export default FormQuestions = (props) => {
 
     const { navigation } = props;
 
+    const [isLoading, setIsLoading] = useState(true)
     const [sections, setSections] = useState([])
 
     useEffect(() => {
@@ -30,6 +31,7 @@ export default FormQuestions = (props) => {
             if (error) {
                 console.log(error)
             }
+            setIsLoading(false)
         }
         readDatabase()
 
@@ -93,7 +95,8 @@ export default FormQuestions = (props) => {
     return (
         <ScrollView>
             <View>
-                {sections.map((section) => {
+                <Dialog visible={isLoading}><Dialog.Loading></Dialog.Loading></Dialog>
+                 {sections.map((section) => {
                     return (<React.Fragment key={`${index++}_section`}>
                         <Text key={`${section.id}_${index++}_title`} style={styles.section}>{section.name_section}</Text>
                           {section.questions.map((question) => {
@@ -108,7 +111,8 @@ export default FormQuestions = (props) => {
                 })
                 }
 
-            <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+
+                {isLoading != true?  <Button  title="Submit" onPress={handleSubmit(onSubmit)}/>:null}
             </View>
         </ScrollView>
 
