@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useEffect, useState} from 'react';
 import {Dimensions, View, StyleSheet, ScrollView} from "react-native";
-import {Dialog, Text} from "@rneui/themed";
+import {Button, Dialog, Text} from "@rneui/themed";
 import {supabase} from "../lib/supabase";
 import {Row, Rows, Table} from "react-native-table-component";
 
@@ -46,7 +46,9 @@ export default function QuestionariesScreen(props) {
                {!isLoading && <Text style={{color: 'black'}}>History...</Text>}
                {isLoading !=null ? <Table>
                    <Row data={headerData} style={styles.HeadStyle} textStyle={{color:'white'}}></Row>
-                   <Rows data={questionaries.map((questionary) => [questionary.id, questionary.created_at.split("T")[0], questionary.forms.form_name,<Text style={{color:'black'}}>Ver detalle</Text>])} style={styles.TableText}></Rows>
+                   <Rows data={questionaries.map((questionary) => [questionary.id, questionary.created_at.split("T")[0], questionary.forms.form_name,<Button onPress={()=>navigation.navigate('DetailQuestionary',{
+                          id: questionary.id
+                   })}>Ver detalle</Button>])} style={styles.TableText}></Rows>
                </Table>: null  }
                </ScrollView>
        </View>

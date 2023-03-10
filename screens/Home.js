@@ -11,7 +11,9 @@ const Home = (props) =>  {
         <View>
             <Text>Welcome {state.user} </Text>
             <Button title={'Questionaries'}
-             onPress={()=> navigation.navigate('Questionaries')}></Button>
+             onPress={()=> navigation.navigate('QuestionariesStack',{
+                    screen:'Questionaries'
+             })}></Button>
             <Button title={'Sign out'}
                     onPress={()=> authContext.signOut()}></Button>
             <Button title={'FormQuestions'}
