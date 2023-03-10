@@ -12,7 +12,7 @@ import LoginScreen from "./screens/LoginScreen";
 import {supabase} from "./lib/supabase";
 import FormQuestions from "./screens/FormQuestionsScreen";
 import QuestionariesScreen from "./screens/QuestionariesScreen";
-import QuestionaryScreenStack from "./screens/QuestionaryScreenStack";
+import QuestionaryScreenStack from "./screens/QuestionaryStack";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
