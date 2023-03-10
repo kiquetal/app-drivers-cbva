@@ -4,7 +4,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import QuestionariesScreen from "./QuestionariesScreen";
 import DetailQuestionary from "./DetailQuestionary";
 
-export default QuestionaryScreenStack = (props) =>  {
+export default QuestionaryStack = (props) =>  {
     const { navigation } = props;
     const Stack = createNativeStackNavigator();
     return (
