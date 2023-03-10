@@ -18,7 +18,8 @@
       "eas": {
         "projectId": "3347f001-a14d-4d85-8c47-dde9dd06f65d"
       }
-    }
+    },
+    "jsEngine": "hermes"
   },
   "name": "app-drivers-cbva"
 }

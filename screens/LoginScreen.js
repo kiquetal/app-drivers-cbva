@@ -18,8 +18,10 @@ export default LoginScreen = (props) => {
 
   return (
     <View>
-        { state.error && <Text style={{color:'red',
-                                    alignContent:'center'}} >{state.error}</Text>}
+        { state.error && <><Text style={{color:'red',
+                                    alignContent:'center'}} >{state.error}</Text>
+            <Text>some</Text>
+        </>}
       <Input style={{color:'black'}} placeholder={'Email'} onChangeText={(text)=> setEmail(text)}   />
       <Input  style={{color:'black'}} placeholder={'Password'}  onChangeText={(text)=>setPassword(text)} secureTextEntry={true}/>
       <Button
