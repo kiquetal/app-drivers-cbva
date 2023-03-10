@@ -116,7 +116,7 @@ export default function App() {
     return (
         <AuthContext.Provider value={ {authContext, state} } >
               <NavigationContainer>
-                <Stack.Navigator>
+                <Stack.Navigator id={"Parent"}>
                     { console.log(`state-navigator`,state.userToken)}
                     { state.userToken == null ? (
                          <Stack.Screen name={"Login"} component={LoginScreen}   options={{ headerShown: true }} />
