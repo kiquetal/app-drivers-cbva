@@ -5936,6 +5936,11 @@ react-native-size-matters@^0.4.0:
   resolved "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.4.0.tgz"
   integrity sha512-8/C0htHrFWeUm9N8JegmadovUfgTWkGBkDPZ1N3YkXtDWb+98Ya2gThiKcu445r8c7YhcrBfnHz/mYsXIusaOQ==
 
+react-native-table-component@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-table-component/-/react-native-table-component-1.2.2.tgz#1c9bdcd8f1fd7edf10d1e93ebc3b7877ecd74def"
+  integrity sha512-7bbsi5431iWcjj3toASh8lFHGi6AG/+MTd4M7GuksXKxx/CFs/Qwv1Ys7D2wgyuYKe3hxWNfSVrteFj0tOYXYw==
+
 react-native-url-polyfill@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/react-native-url-polyfill/-/react-native-url-polyfill-1.3.0.tgz"

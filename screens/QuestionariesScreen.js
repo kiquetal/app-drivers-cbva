@@ -1,19 +1,54 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, View, StyleSheet} from "react-native";
-import { Text} from "@rneui/themed";
+import {Dimensions, View, StyleSheet, ScrollView} from "react-native";
+import {Dialog, Text} from "@rneui/themed";
+import {supabase} from "../lib/supabase";
+import {Row, Rows, Table} from "react-native-table-component";
 
 const { width } = Dimensions.get("window");
 export default function QuestionariesScreen(props) {
 
     const { navigation } = props;
 
+    const [isLoading, setIsLoading] = useState(true);
 
+    const [questionaries, setQuestionaries] = useState([])
 
+    const [headerData, setHeaderData] = useState(['ID', 'Fecha', 'Form','Action'])
+    useEffect(() => {
+
+        const loadQuestionaries = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('questionaries')
+
+                    .select(`*, forms(form_name)`)
+                if (error) {
+                    console.log(error);
+                    throw error;
+                }
+                console.log(data);
+                setQuestionaries(data);
+                setIsLoading(false);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        loadQuestionaries();
+
+    },[navigation]);
 
    return (
-       <View >
-           <Text style={{color:'black'}}>History of Questionaries</Text>
+       <View>
+        <Dialog isVisible={isLoading==true}><Dialog.Loading/></Dialog>
+
+           <ScrollView>
+               {!isLoading && <Text style={{color: 'black'}}>History...</Text>}
+               {isLoading !=null ? <Table>
+                   <Row data={headerData} style={styles.HeadStyle} textStyle={{color:'white'}}></Row>
+                   <Rows data={questionaries.map((questionary) => [questionary.id, questionary.created_at.split("T")[0], questionary.forms.form_name,<Text style={{color:'black'}}>Ver detalle</Text>])} style={styles.TableText}></Rows>
+               </Table>: null  }
+               </ScrollView>
        </View>
     );
 }
@@ -68,4 +103,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 8,
     },
+    HeadStyle: {
+        height: 50,
+        alignContent: "center",
+        backgroundColor: '#4347c2',
+        color: '#fff'
+    },
+    TableText: {
+        margin: 10
+    }
+
 });
