@@ -18,4 +18,5 @@ sdkmanager "build-tools;28.0.3" "platform-tools" "platforms;android-28" "tools"
 sdkmanager --licenses
 
 sudo apt install gradle
+./sdkmanager "platform-tools" "platforms;android-26" "build-tools;26.0.3"
 
