@@ -2,5 +2,5 @@
 - Selección del tipo de questionario.
 - Agregar tipo de respuestas - { si, no, na, notes} 
                                { inputText}
-
+-using react-native-elements for 
                                  
