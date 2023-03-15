@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, Text, StyleSheet, ScrollView} from "react-native";
 import {useEffect, useState} from "react";
 import {supabase} from "../lib/supabase";
-import {Row, Table} from "react-native-table-component";
+import {Col, Row, Rows, Table, TableWrapper} from "react-native-table-component";
 import {Dialog} from "@rneui/themed";
 
 export default DetailQuestionaryScreen = (props) =>  {
@@ -46,44 +46,91 @@ export default DetailQuestionaryScreen = (props) =>  {
 
     const sections = Array.from(new Set(tableData.slice(1).map(row => row[0])));
 
+    const tableHead = ['', 'Head1', 'Head2', 'Head3']
+    const tableTitle = ['Esta usted seguro de saber el reglamento de transito?', 'Title2', 'Title3', 'Title4','Title', 'Title2', 'Title3', 'Title4','Title', 'Title2', 'Title3', 'Title4','Title', 'Title2', 'Title3', 'Title4']
+    const tableData2 = [
+        ['1', '2', '3'],
+        ['a', 'b', 'c'],
+        ['1', '2', '3'],
+        ['a', 'b', 'c'],
+            ['1', '2', '3'],
+        ['a', 'b', 'c'],
+            ['1', '2', '3'],
+        ['a', 'b', 'c'],
+        ['a', 'b', 'c'],
+        ['1', '2', '3'],
+        ['a', 'b', 'c'],
+        ['1', '2', '3'],
+        ['a', 'b', 'c'],
+        ['1', '2', '3'],
+            ['1', '2', '3'],
+        ['a', 'b', 'c'],
+       ['1', '2', '3'],
+        ['a', 'b', 'c']
+            ['1', '2', '3'],
+        ['a', 'b', 'c'],
+        ['1', '2', '3'],
+        ['a', 'b', 'c'],
+        ['1', '2', '3'],
+        ['a', 'b', 'c'],
+        ['1', '2', '3'],
+        ['a', 'b', 'c']
+    ]
+    const large = false
     return (
         <ScrollView>
         <Dialog visible={isLoading}><Dialog.Loading></Dialog.Loading></Dialog>
-        <Table>
-            {sections.map((section) => (
-                <React.Fragment key={section}>
-                    <Row data={[section]} key={`{section}_s`} style={styles.sectionRow} textStyle={styles.sectionText} />
-                    {tableData
-                        .filter(row => row[0] === section)
-                        .map((rowData) => (
-                            <Row data={[rowData[1],null]} style={styles.questionRow} textStyle={styles.questionText} />
-                        ))}
-                </React.Fragment>
-            ))}
-        </Table>
+            <Table borderStyle={{borderWidth: 1}} style={{flexGrow:1}}>
+                <Row data={['SECTION1']} style={styles.head}/>
+                      <React.Fragment>
+                <Row data={['Posee usted los conocmientos minimos de PA, manejo y también curso de manejo defensivo, \n ocasionó una pérdida al cuartel']} style={styles.head}/>
+                          <TableWrapper style={styles.wrapper}>
+
+                    <Rows data={[["no yes"],[" nota larga"]]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                          </TableWrapper>
+                          </React.Fragment>
+
+                <Row data={['tiene usted experiencia en manejar?']}/>
+                <TableWrapper style={styles.wrapper} >
+                    <Rows data={[["no yes"],[" nota larga"]]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                </TableWrapper>
+
+                <Row data={['tiene usted experiencia en manejar?']}/>
+                <TableWrapper style={styles.wrapper} >
+                    <Rows data={[["no yes"],[" nota larga"]]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                </TableWrapper>
+
+                <Row data={['tiene usted experiencia en manejar?']}/>
+                <TableWrapper style={styles.wrapper} >
+                    <Rows data={[["no yes"],[" nota larga"]]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                </TableWrapper>
+                <Row data={['tiene usted experiencia en manejar?']}/>
+                <TableWrapper style={styles.wrapper} >
+                    <Rows data={[["no yes"],[" nota larga"]]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                </TableWrapper>
+                <Row data={['tiene usted experiencia en manejar?']}/>
+                <TableWrapper style={styles.wrapper} >
+                    <Rows data={[["no yes"],[" nota larga"]]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                </TableWrapper>
+                <Row data={['tiene usted experiencia en manejar?']}/>
+                <TableWrapper style={styles.wrapper} >
+                    <Rows data={[["no yes"],large?[" nota larga"]:null]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                </TableWrapper>
+                <Row data={['tiene usted experiencia en manejar?']}/>
+                <TableWrapper style={styles.wrapper} >
+                    <Rows data={[["no yes"],[" nota larga"]]} flexArr={[2, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                </TableWrapper>
+
+
+            </Table>
         </ScrollView>
     );
 }
 const styles = StyleSheet.create({
-    sectionRow: {
-        height: 30,
-        backgroundColor: 'red',
-
-    },
-    sectionText: {
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 6,
-    },
-    questionRow: {
-        height: 40,
-    },
-    questionText: {
-        marginBottom: 3,
-
-        fontSize: 14,
-        textAlign: 'left',
-        color: '#555555',
-        fontWeight: 'bold',
-    },
+    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+    head: {    backgroundColor: '#f1f8ff' , flex:1  },
+    wrapper: { flexDirection: 'row' , borderStyle: 'solid', borderWidth: 1, borderColor: 'black'},
+    title: { flex: 1, backgroundColor: '#f6f8fa' },
+    row: {  height: 48  },
+    text: { textAlign: 'center' }
 });
