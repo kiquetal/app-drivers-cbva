@@ -27,7 +27,7 @@ const Home = (props) => {
                             style={styles.icon}
                         />
                     }
-                    style={[styles.button, styles.questionnairesButton]}
+                    style={[styles.button]}
                 />
                 <Button
                     title={'Sign out'}
@@ -53,7 +53,7 @@ const Home = (props) => {
                             style={styles.icon}
                         />
                     }
-                    style={[styles.button, styles.formQuestionsButton]}
+                    style={[styles.button]}
                 />
             </View>
         </View>
@@ -74,6 +74,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'column',
+        alignItems:'stretch',
+
     },
     button: {
         marginHorizontal: 10,
@@ -82,16 +84,14 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         flexDirection: 'row',
         alignItems: 'center',
+
+
     },
-    questionnairesButton: {
-        backgroundColor: '#007AFF',
-    },
+
     signOutButton: {
         backgroundColor: '#FF0000',
     },
-    formQuestionsButton: {
-        backgroundColor: '#4CD964',
-    },
+
     icon: {
         marginRight: 8,
     },

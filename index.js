@@ -12,6 +12,13 @@ const theme = createTheme({
         primary: '#000',
     },
     mode: 'dark',
+    components:{
+        Button:{
+            buttonStyle: {
+                backgroundColor: '#437ec2',
+            }
+        }
+    }
 });
 const App2 = () => (
     <ThemeProvider theme={theme}>

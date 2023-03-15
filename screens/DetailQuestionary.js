@@ -3,7 +3,7 @@ import {View,  StyleSheet, ScrollView} from "react-native";
 import  {useEffect, useState} from "react";
 import {supabase} from "../lib/supabase";
 import {Cell, Col, Row, Rows, Table, TableWrapper} from "react-native-table-component";
-import {Dialog, Text} from "@rneui/themed";
+import {Button, Dialog, Text} from "@rneui/themed";
 
 export default DetailQuestionaryScreen = (props) =>  {
 
@@ -43,6 +43,7 @@ export default DetailQuestionaryScreen = (props) =>  {
         ['Education Information', 'What is your highest level of education?', 'no'],
         ['Education Information', 'What is your highest level of education?', 'no'],
         ['COm', 'What is your graduation year?','na'],
+        ['COm', 'Are you good??','na'],
     ];
 
     const sections = Array.from(new Set(tableData.slice(1).map(row => row[0])));
@@ -79,41 +80,68 @@ export default DetailQuestionaryScreen = (props) =>  {
     ]
     const large = false
     return (
-        <ScrollView>
-        <Dialog visible={isLoading}><Dialog.Loading></Dialog.Loading></Dialog>
-            <Table borderStyle={{borderWidth: 1}} style={{borderColor: 'black'}}>
+        <ScrollView style={{ backgroundColor: '#f0f0f0' }}>
+            <Dialog visible={isLoading}>
+                <Dialog.Loading />
+            </Dialog>
+            <Table borderStyle={{ borderWidth: 1, borderColor: '#4347c2' }} style={{ margin: 10 }}>
                 {sections.map((section, index) => {
-
                     const filteredRows = tableData.slice(1).filter(row => row[0] === section);
                     return (
-                        <React.Fragment>
-                        <Row key={index} data={[section]} style={styles.head} textStyle={styles.headTile} />
-                            {filteredRows.map((row, index) => {
-                            return (
-                                <React.Fragment>
-                                    <Row key={`${index}_i`} data={[row[1]]} textStyle={styles.question}  style={styles.questionHeader} />
-                                    <Row key={`${index}_m`} data={[row[2]]} style={styles.row} textStyle={styles.text} />
-                                   {index % 2 === 1 && <Row key={`${index}_odd`} data={['Additional row']} textStyle={styles.text}/>}
+                        <React.Fragment key={index}>
+                            <Row data={[section]} style={styles.head} textStyle={styles.headTitle} />
+                            {filteredRows.map((row, index) => (
+                                <React.Fragment key={`${index}_f`}>
+                                    <Row data={[row[1]]} textStyle={styles.question} style={styles.questionHeader} />
+                                    <Row data={[row[2]]} style={styles.row} textStyle={styles.text} />
+                                    {index % 2 === 1 && <Row data={['Additional row']} textStyle={styles.text} key={`${index}_odd`} />}
                                 </React.Fragment>
-                            )
-                         })}
+                            ))}
                         </React.Fragment>
-                    )
+                    );
                 })}
-
-
             </Table>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', margin: 10 }}>
+                <Button buttonStyle={{marginLeft:2}} onPress={() => navigation.navigate('Questionaries')}>Regresar</Button>
+                <Button  buttonStyle={{marginLeft:5}} onPress={() => navigation.navigate('Questionary')}>Exportar csv</Button>
+            </View>
         </ScrollView>
     );
 }
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-    head: {    backgroundColor: '#4347c2' , flex:1  },
-    headTile: { textAlign: 'center', color:'white' },
-    wrapper: { flexDirection: 'row' , borderStyle: 'solid', borderWidth: 1, borderColor: 'black'},
-    title: { flex: 1, backgroundColor: '#f6f8fa' },
-    row: {  height: 48 ,color:'red' },
-    text: { textAlign: 'center', color:'black' },
-    question: { textAlign: 'left', color:'black' },
-    questionHeader: { textAlign: 'left', color:'black', backgroundColor: '#0288D1' },
+    container: {
+        flex: 1,
+        padding: 16,
+        paddingTop: 30,
+        backgroundColor: '#fff'
+    },
+    head: {
+        backgroundColor: '#4347c2',
+        flex: 1
+    },
+    headTitle: {
+        textAlign: 'center',
+        color: 'white',
+        fontWeight: 'bold'
+    },
+    wrapper: {
+        flexDirection: 'row',
+        borderStyle: 'solid',
+    },
+    questionHeader: {
+        backgroundColor: '#437ec2',
+        color: 'white',
+        fontWeight: 'bold'
+    },
+    question: {
+        marginLeft: 10,
+        fontWeight: 'bold',
+        color: 'white'
+    },
+    row: {
+        backgroundColor: '#f5f5f5'
+    },
+    text: {
+        marginLeft: 10
+    }
 });
