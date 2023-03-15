@@ -45,7 +45,7 @@ export default function QuestionariesScreen(props) {
            <ScrollView>
                {!isLoading && <Text style={{color: 'black'}}>History...</Text>}
                {isLoading !=null ? <Table>
-                   <Row data={headerData} style={styles.HeadStyle} textStyle={{color:'white'}}></Row>
+                   <Row data={headerData} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
                    <Rows data={questionaries.map((questionary) => [questionary.id, questionary.created_at.split("T")[0], questionary.forms.form_name,<Button onPress={()=>navigation.navigate('DetailQuestionary',{
                           id: questionary.id
                    })}>Ver detalle</Button>])} style={styles.TableText}></Rows>
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
         alignContent: "center",
         backgroundColor: '#4347c2',
         color: '#fff'
+
     },
     TableText: {
         margin: 10

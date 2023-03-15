@@ -1,27 +1,100 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
-import {Button} from "@rneui/themed";
-import {AuthContext} from "../contexts/AuthContext";
-const Home = (props) =>  {
+import { Text, View, StyleSheet } from 'react-native';
+import { Button } from '@rneui/themed';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { AuthContext } from '../contexts/AuthContext';
 
+const Home = (props) => {
     const { navigation } = props;
 
     const { state, authContext } = React.useContext(AuthContext);
     return (
-        <View>
-            <Text>Welcome {state.user} </Text>
-            <Button title={'Questionaries'}
-             onPress={()=> navigation.navigate('QuestionariesStack',{
-                    screen:'Questionaries'
-             })}></Button>
-            <Button title={'Sign out'}
-                    onPress={()=> authContext.signOut()}></Button>
-            <Button title={'FormQuestions'}
-                    onPress={()=> navigation.navigate('FormQuestions')}></Button>
+        <View style={styles.container}>
+            <Text style={styles.title}>Welcome, {state.user}!</Text>
+            <View style={styles.buttonContainer}>
+                <Button
+                    title={'Questionnaires'}
+                    onPress={() =>
+                        navigation.navigate('QuestionariesStack', {
+                            screen: 'Questionaries',
+                        })
+                    }
+                    icon={
+                        <Icon
+                            name="file-text-o"
+                            color="#FFFFFF"
+                            size={18}
+                            style={styles.icon}
+                        />
+                    }
+                    style={[styles.button, styles.questionnairesButton]}
+                />
+                <Button
+                    title={'Sign out'}
+                    onPress={() => authContext.signOut()}
+                    icon={
+                        <Icon
+                            name="sign-out"
+                            color="#FFFFFF"
+                            size={18}
+                            style={styles.icon}
+                        />
+                    }
+                    style={[styles.button, styles.signOutButton]}
+                />
+                <Button
+                    title={'Form Questions'}
+                    onPress={() => navigation.navigate('FormQuestions')}
+                    icon={
+                        <Icon
+                            name="edit"
+                            color="#FFFFFF"
+                            size={18}
+                            style={styles.icon}
+                        />
+                    }
+                    style={[styles.button, styles.formQuestionsButton]}
+                />
+            </View>
         </View>
+    );
+};
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        flexDirection: 'column',
+        backgroundColor: '#F5FCFF',
+    },
+    title: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 10,
+    },
+    buttonContainer: {
+        flexDirection: 'column',
+    },
+    button: {
+        marginHorizontal: 10,
+        marginVertical: 5,
+        paddingHorizontal: 40,
+        paddingVertical: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    questionnairesButton: {
+        backgroundColor: '#007AFF',
+    },
+    signOutButton: {
+        backgroundColor: '#FF0000',
+    },
+    formQuestionsButton: {
+        backgroundColor: '#4CD964',
+    },
+    icon: {
+        marginRight: 8,
+    },
+});
 
-    )
-}
-
-export default Home
+export default Home;
