@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {View,  StyleSheet, ScrollView} from "react-native";
-import {useEffect, useState} from "react";
+import  {useEffect, useState} from "react";
 import {supabase} from "../lib/supabase";
 import {Cell, Col, Row, Rows, Table, TableWrapper} from "react-native-table-component";
 import {Dialog, Text} from "@rneui/themed";
@@ -35,15 +35,14 @@ export default DetailQuestionaryScreen = (props) =>  {
     )
     const tableData = [
         ['Section', 'Question'],
-        ['Personal Information', 'What is your name?'],
-        ['Personal Information', 'What is your favorite color?'],
-        ['Personal Information', 'What is your favorite food?'],
-        ['Employment Information', 'What is your job title?'],
-        ['Employment Information', 'How many years of experience do you have?'],
-        ['Education Information', 'What is your highest level of education?'],
-
-        ['Education Information', 'What is your highest level of education?'],
-        ['COm', 'What is your graduation year?'],
+        ['Personal Information', 'What is your name?','si'],
+        ['Personal Information', 'What is your favorite color?','no'],
+        ['Personal Information', 'What is your favorite food?', 'si'],
+        ['Employment Information', 'What is your job title?', 'no'],
+        ['Employment Information', 'How many years of experience do you have? asdasd asdasdsadas asdsadsadadsa adasdsadasdas adsadasdassdas', 'si'],
+        ['Education Information', 'What is your highest level of education?', 'no'],
+        ['Education Information', 'What is your highest level of education?', 'no'],
+        ['COm', 'What is your graduation year?','na'],
     ];
 
     const sections = Array.from(new Set(tableData.slice(1).map(row => row[0])));
@@ -84,12 +83,24 @@ export default DetailQuestionaryScreen = (props) =>  {
         <Dialog visible={isLoading}><Dialog.Loading></Dialog.Loading></Dialog>
             <Table borderStyle={{borderWidth: 1}} style={{borderColor: 'black'}}>
                 {sections.map((section, index) => {
-                 return (
-                    <Cell key={index} style={styles.row} textStyle={styles.text}>
-                        <Text style={styles.text}>asdadas</Text>
-                    </Cell>
-                 )
+
+                    const filteredRows = tableData.slice(1).filter(row => row[0] === section);
+                    return (
+                        <React.Fragment>
+                        <Row key={index} data={[section]} style={styles.head} textStyle={styles.headTile} />
+                            {filteredRows.map((row, index) => {
+                            return (
+                                <React.Fragment>
+                                    <Row key={`${index}_i`} data={[row[1]]} textStyle={styles.question}  style={styles.questionHeader} />
+                                    <Row key={`${index}_m`} data={[row[2]]} style={styles.row} textStyle={styles.text} />
+                                   {index % 2 === 1 && <Row key={`${index}_odd`} data={['Additional row']} textStyle={styles.text}/>}
+                                </React.Fragment>
+                            )
+                         })}
+                        </React.Fragment>
+                    )
                 })}
+
 
             </Table>
         </ScrollView>
@@ -97,9 +108,12 @@ export default DetailQuestionaryScreen = (props) =>  {
 }
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-    head: {    backgroundColor: '#f1f8ff' , flex:1  },
+    head: {    backgroundColor: '#4347c2' , flex:1  },
+    headTile: { textAlign: 'center', color:'white' },
     wrapper: { flexDirection: 'row' , borderStyle: 'solid', borderWidth: 1, borderColor: 'black'},
     title: { flex: 1, backgroundColor: '#f6f8fa' },
     row: {  height: 48 ,color:'red' },
-    text: { textAlign: 'center', color:'red' }
+    text: { textAlign: 'center', color:'black' },
+    question: { textAlign: 'left', color:'black' },
+    questionHeader: { textAlign: 'left', color:'black', backgroundColor: '#0288D1' },
 });
