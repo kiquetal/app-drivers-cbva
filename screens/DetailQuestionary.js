@@ -27,6 +27,7 @@ export default DetailQuestionaryScreen = (props) =>  {
         }
         console.log(JSON.stringify(data))
             setIsLoading(false);
+            setQuestionaries(data)
         }
 
         loadDetailQuestionary();
@@ -47,54 +48,24 @@ export default DetailQuestionaryScreen = (props) =>  {
     ];
 
     const sections = Array.from(new Set(tableData.slice(1).map(row => row[0])));
-
-    const tableHead = ['', 'Head1', 'Head2', 'Head3']
-    const tableTitle = ['Esta usted seguro de saber el reglamento de transito?', 'Title2', 'Title3', 'Title4','Title', 'Title2', 'Title3', 'Title4','Title', 'Title2', 'Title3', 'Title4','Title', 'Title2', 'Title3', 'Title4']
-    const tableData2 = [
-        ['1', '2', '3'],
-        ['a', 'b', 'c'],
-        ['1', '2', '3'],
-        ['a', 'b', 'c'],
-            ['1', '2', '3'],
-        ['a', 'b', 'c'],
-            ['1', '2', '3'],
-        ['a', 'b', 'c'],
-        ['a', 'b', 'c'],
-        ['1', '2', '3'],
-        ['a', 'b', 'c'],
-        ['1', '2', '3'],
-        ['a', 'b', 'c'],
-        ['1', '2', '3'],
-            ['1', '2', '3'],
-        ['a', 'b', 'c'],
-       ['1', '2', '3'],
-        ['a', 'b', 'c']
-            ['1', '2', '3'],
-        ['a', 'b', 'c'],
-        ['1', '2', '3'],
-        ['a', 'b', 'c'],
-        ['1', '2', '3'],
-        ['a', 'b', 'c'],
-        ['1', '2', '3'],
-        ['a', 'b', 'c']
-    ]
-    const large = false
+    const sectionsFromQuestionaries = Array.from(new Set(questionaries.map(row => row.sections.name_section)));
     return (
         <ScrollView style={{ backgroundColor: '#f0f0f0' }}>
             <Dialog visible={isLoading}>
                 <Dialog.Loading />
             </Dialog>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#4347c2' }} style={{ margin: 10 }}>
-                {sections.map((section, index) => {
-                    const filteredRows = tableData.slice(1).filter(row => row[0] === section);
+                {sectionsFromQuestionaries.map((section, index) => {
+                    const filteredRows = questionaries.filter(row => row.sections.name_section === section);
+                    console.log(filteredRows)
                     return (
                         <React.Fragment key={index}>
                             <Row data={[section]} style={styles.head} textStyle={styles.headTitle} />
                             {filteredRows.map((row, index) => (
                                 <React.Fragment key={`${index}_f`}>
-                                    <Row data={[row[1]]} textStyle={styles.question} style={styles.questionHeader} />
-                                    <Row data={[row[2]]} style={styles.row} textStyle={styles.text} />
-                                    {index % 2 === 1 && <Row data={['Additional row']} textStyle={styles.text} key={`${index}_odd`} />}
+                                    <Row data={[row.questions.question]} textStyle={styles.question} style={styles.questionHeader} />
+                                    <Row data={[row.answer]} style={styles.row} textStyle={styles.text} />
+                                    {row.notes > "" && <Row data={[row.notes]} textStyle={styles.text} key={`${index}_odd`} />}
                                 </React.Fragment>
                             ))}
                         </React.Fragment>

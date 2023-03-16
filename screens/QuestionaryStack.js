@@ -9,8 +9,8 @@ export default QuestionaryStack = (props) =>  {
     const Stack = createNativeStackNavigator();
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Questionaries" component={QuestionariesScreen}  />
-            <Stack.Screen name="DetailQuestionary" component={DetailQuestionary} options={({route})=>( {title: Questionario ${route.params.id}`})}/>
+            <Stack.Screen name="Questionaries" component={QuestionariesScreen}   options={({route})=>( {title:'Cuestionarios'})} />
+            <Stack.Screen name="DetailQuestionary" component={DetailQuestionary} options={({route})=>( {title: `Questionario ${route.params.id}`})}/>
         </Stack.Navigator>
 
     )

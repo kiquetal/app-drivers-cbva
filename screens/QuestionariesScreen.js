@@ -23,6 +23,7 @@ export default function QuestionariesScreen(props) {
                     .from('questionaries')
 
                     .select(`*, forms(form_name)`)
+                    .order('created_at', { ascending: false })
                 if (error) {
                     console.log(error);
                     throw error;

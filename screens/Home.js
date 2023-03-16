@@ -10,10 +10,14 @@ const Home = (props) => {
     const { state, authContext } = React.useContext(AuthContext);
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Welcome, {state.user}!</Text>
+            <View style={{ justifyContent: 'center', alignItems: 'center' ,marginBottom:10}}>
+            <Icon name={'cloud'}  size={60} color={'#437ec2'}  />
+                <Text style={styles.title}>Welcome, {state.user}!</Text>
+
+            </View>
             <View style={styles.buttonContainer}>
                 <Button
-                    title={'Questionnaires'}
+                    title={'Ver Cuestionarios completados'}
                     onPress={() =>
                         navigation.navigate('QuestionariesStack', {
                             screen: 'Questionaries',
@@ -29,21 +33,9 @@ const Home = (props) => {
                     }
                     style={[styles.button]}
                 />
+
                 <Button
-                    title={'Sign out'}
-                    onPress={() => authContext.signOut()}
-                    icon={
-                        <Icon
-                            name="sign-out"
-                            color="#FFFFFF"
-                            size={18}
-                            style={styles.icon}
-                        />
-                    }
-                    style={[styles.button, styles.signOutButton]}
-                />
-                <Button
-                    title={'Form Questions'}
+                    title={'Completar Cuestionario'}
                     onPress={() => navigation.navigate('FormQuestions')}
                     icon={
                         <Icon
@@ -54,6 +46,19 @@ const Home = (props) => {
                         />
                     }
                     style={[styles.button]}
+                />
+                <Button
+                    title={'Salir'}
+                    onPress={() => authContext.signOut()}
+                    icon={
+                        <Icon
+                            name="sign-out"
+                            color="#FFFFFF"
+                            size={18}
+                            style={styles.icon}
+                        />
+                    }
+                    style={[styles.button, styles.signOutButton]}
                 />
             </View>
         </View>
