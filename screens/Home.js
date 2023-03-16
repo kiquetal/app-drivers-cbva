@@ -47,6 +47,18 @@ const Home = (props) => {
                     }
                     style={[styles.button]}
                 />
+                <Button title={'MenuForm'}
+                    onPress={() => navigation.navigate('MenuForm')}
+                    icon={
+                        <Icon
+                            name="edit"
+                            color="#FFFFFF"
+                            size={18}
+                            style={styles.icon}
+                        />
+                    }
+                    style={[styles.button]}
+                />
                 <Button
                     title={'Salir'}
                     onPress={() => authContext.signOut()}

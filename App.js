@@ -12,6 +12,7 @@ import LoginScreen from "./screens/LoginScreen";
 import {supabase} from "./lib/supabase";
 import FormQuestions from "./screens/FormQuestionsScreen";
 import QuestionaryStack from "./screens/QuestionaryStack";
+import MenuFormStack from "./screens/MenuFormStack";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -124,6 +125,7 @@ export default function App() {
                         <Stack.Screen name={"Home"} component={HomeScreen} options={{ headerShown: false }} />
                         <Stack.Screen name={"QuestionariesStack"} component={QuestionaryStack} options={{ headerShown: false }} />
                          <Stack.Screen name={"FormQuestions"} component={FormQuestions} options={{ headerShown: true }} />
+                          <Stack.Screen name={"MenuForm"} component={MenuFormStack} options={{ headerShown: false }} />
                         </>
                         )}
 
