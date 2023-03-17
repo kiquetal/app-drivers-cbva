@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Button} from "@rneui/themed";
 import {View,Text} from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons";
 import {useState} from "react";
 
 export default function FormSelectionScreen(props) {
