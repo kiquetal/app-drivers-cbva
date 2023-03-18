@@ -1,44 +1,74 @@
 import * as React from 'react';
 import {Button} from "@rneui/themed";
-import {View,Text} from "react-native";
-import Icon from "react-native-vector-icons";
-import {useState} from "react";
+import {View,Text, StyleSheet} from "react-native";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function FormSelectionScreen(props) {
     const { navigation } = props;
-    const [selectedOption, setSelectedOption] = useState(null);
 
-    const handleOption1Press = () => setSelectedOption('option1');
-    const handleOption2Press = () => setSelectedOption('option2');
 
     return (
-        <View style={{ flexDirection: 'column', justifyContent: 'center', margin: 10 , alignItems:'flex-start',flexGrow:1}}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Button
-                style={{
-                    backgroundColor: selectedOption === 'option1' ? '#437ec2' : 'white',
-                    borderColor: '#437ec2',
-                    borderWidth: 1,
-                    width: 200,
-                    marginBottom:20
-                }}
-                onPress={handleOption1Press}
+                buttonStyle={styles.screenButtonContainer}
+                onPress={() => navigation.navigate('Screen1')}
             >
-                <Icon name="gear" size={100} color={ 'white'} style={{marginBottom:10}} />
+                <View style={styles.screenIcon}>
+                    <Icon name="wrench" size={20} color="#7f5af0" />
+                </View>
+                <Text style={styles.screenButtonText}>Operadores de móviles</Text>
             </Button>
+
             <Button
-                style={{
-                    backgroundColor: selectedOption === 'option2' ? '#437ec2' : 'white',
-                    borderColor: '#437ec2',
-                    borderWidth: 1,
-                }}
-                onPress={handleOption2Press}
-                title={'Option 2'}
-                titleStyle={'black'}
-                buttonStyle={{width: 200,color:'black'}}
+                buttonStyle={styles.screenButtonContainer}
+                onPress={() => navigation.navigate('Screen2')}
             >
-                <Icon name="car" size={100} color={'white'} />
+                <View style={styles.screenIcon}>
+                    <Icon name="gear" size={20} color="#7f5af0" />
+                </View>
+                <Text style={styles.screenButtonText}>Material Menor</Text>
+            </Button>
+
+            <Button
+                buttonStyle={styles.screenButtonContainer}
+                onPress={() => navigation.navigate('Screen3')}
+            >
+                <View style={styles.screenIcon}>
+                    <Icon name="car" size={20} color="#7f5af0" />
+                </View>
+                <Text style={styles.screenButtonText}>Material Mayor</Text>
             </Button>
         </View>
     );
 
 }
+
+const styles = StyleSheet.create({
+    screenButtonContainer: {
+
+        padding: 10,
+        borderRadius: 30,
+        marginBottom: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    screenButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginLeft: 10,
+    },
+    screenIcon: {
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 30,
+        height: 30,
+    },
+    screenIconText: {
+        color: '#7f5af0',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+});
