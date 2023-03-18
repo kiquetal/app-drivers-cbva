@@ -34,19 +34,6 @@ const Home = (props) => {
                     style={[styles.button]}
                 />
 
-                <Button
-                    title={'Completar Cuestionario'}
-                    onPress={() => navigation.navigate('FormQuestions')}
-                    icon={
-                        <Icon
-                            name="edit"
-                            color="#FFFFFF"
-                            size={18}
-                            style={styles.icon}
-                        />
-                    }
-                    style={[styles.button]}
-                />
                 <Button title={'MenuForm'}
                     onPress={() => navigation.navigate('MenuForm')}
                     icon={

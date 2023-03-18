@@ -72,9 +72,12 @@ export default DetailQuestionaryScreen = (props) =>  {
                     );
                 })}
             </Table>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', margin: 10 }}>
+            <View style={{ flexDirection: 'row', flexWrap:'wrap', justifyContent: 'center', margin: 10 }}>
                 <Button buttonStyle={{marginLeft:2}} onPress={() => navigation.navigate('Questionaries')}>Regresar</Button>
                 <Button  buttonStyle={{marginLeft:5}} onPress={() => navigation.navigate('Questionary')}>Exportar csv</Button>
+                <Button buttonStyle={{marginLeft:5, marginTop:10}} onPress={() => navigation.navigate('MenuForm',{
+                    screen: 'FormQuestionsOpeartors'
+                })}>Agregar nuevo cuestionario</Button>
             </View>
         </ScrollView>
     );
