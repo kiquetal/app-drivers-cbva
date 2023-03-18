@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     },
 
      question: {
-        backgroundColor: 'indigo',
+        backgroundColor: '#7f5af0',
         color: 'white',
         padding: 10,
         fontSize: 11,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     section: {
-        backgroundColor: 'blue',
+        backgroundColor: '#437ec2',
         color: 'white',
         padding: 10,
     }

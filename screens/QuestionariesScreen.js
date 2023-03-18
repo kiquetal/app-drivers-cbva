@@ -57,7 +57,7 @@ export default function QuestionariesScreen(props) {
 }
 const styles = StyleSheet.create({
     subHeader: {
-        backgroundColor : "#2089dc",
+        backgroundColor : "#7f5af0",
         color : "white",
         textAlign : "center",
         paddingVertical : 7,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     HeadStyle: {
         height: 50,
         alignContent: "center",
-        backgroundColor: '#4347c2',
+        backgroundColor: '#7f5af0',
         color: '#fff'
 
     },
