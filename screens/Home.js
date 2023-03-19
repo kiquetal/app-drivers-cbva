@@ -34,7 +34,7 @@ const Home = (props) => {
                     style={[styles.button]}
                 />
 
-                <Button title={'MenuForm'}
+                <Button title={'Llenar Fomularios'}
                     onPress={() => navigation.navigate('MenuForm')}
                     icon={
                         <Icon

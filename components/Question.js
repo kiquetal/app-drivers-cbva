@@ -13,7 +13,7 @@ export default Question = (props) =>  {
             <View >
                 <View style={{backgroundColor:'white', flex:1, flexDirection:'row', justifyContent:'center' }}>
                     <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
-                        <CheckBox title={"Yes"}
+                        <CheckBox title={"Si"}
                                   checked={value}
                                   height={50}
                                   style={{backgroundColor: 'blue'}}
@@ -22,7 +22,7 @@ export default Question = (props) =>  {
                                   style={{marginBottom: 0}}
                         />
                     )
-                    } name={`${props.section}_${props.question}_answer_yes`} control={props.control} defaultValue={""}
+                    } name={`${props.section}_${props.question}_answer_si`} control={props.control} defaultValue={""}
                     />
                     <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
                         <CheckBox title={"No"}

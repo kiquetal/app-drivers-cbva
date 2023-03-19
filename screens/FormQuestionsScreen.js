@@ -26,15 +26,20 @@ export default FormQuestions = (props) => {
                 .order('id',{foreignTable: 'questions', ascending: true})
 
             if (data) {
+                setIsLoading(false)
+
                 const onlySectionWithQuestions = data.filter((section) => section.questions.length > 0)
-                console.log(onlySectionWithQuestions)
+                console.log('first fitler',JSON.stringify(onlySectionWithQuestions))
                 if (onlySectionWithQuestions.length > 0) {
                     setFormId(onlySectionWithQuestions[0].form_id)
                 }
                 setSections(onlySectionWithQuestions)
+
             }
             if (error) {
                 console.log(error)
+                setIsLoading(false)
+
             }
             if (user === null) {
                 const {data, error} = await supabase.auth.getUser()
@@ -43,9 +48,9 @@ export default FormQuestions = (props) => {
                 }
                 if (error) {
                     console.log(error)
+
                 }
             }
-            setIsLoading(false)
         }
         readDatabase()
 
@@ -150,7 +155,7 @@ export default FormQuestions = (props) => {
                 <Dialog visible={isLoading}><Dialog.Loading></Dialog.Loading></Dialog>
                  {sections.map((section) => {
                     return (<React.Fragment key={`${index++}_section`}>
-                        <Text key={`${section.id}_${index++}_title`} style={styles.section}>{section.name_section}</Text>
+                        <Text key={`${section.id}_${index++}_title`} style={styles.section}>{section.id}-{section.name_section}</Text>
                           {section.questions.map((question) => {
                              return(
                                  <React.Fragment key={`${section}_${question.id}_question`}>
