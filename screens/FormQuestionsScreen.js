@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ScrollView, View, StyleSheet} from "react-native";
+import {ScrollView, View, StyleSheet, FlatList} from "react-native";
 import {Button, Dialog, Input, Overlay, Text} from "@rneui/themed";
 import { useForm, Controller} from "react-hook-form";
 import {useContext, useEffect, useState} from "react";
@@ -10,7 +10,7 @@ import {AuthContext} from "../contexts/AuthContext";
 
 export default FormQuestions = (props) => {
 
-    const { control, handleSubmit, formState: { errors } } = useForm();
+    const { control, handleSubmit, formState: { errors } ,getValues} = useForm();
 
     const { navigation } = props;
 
@@ -78,8 +78,110 @@ export default FormQuestions = (props) => {
 
     }, [navigation])
 
+    const submit2 =  async () => {
+        let sectionsObject = {}
+
+        const data2 = getValues();
+        setIsLoading(true)
+        console.log("data2",JSON.stringify(data2))
+        Object.keys(data2).forEach((key) => {
+            let section = key.split("_")[0];
+            section = section.split("section")[1];
+            let question = key.split("_")[1];
+            question = question.split("question")[1];
+            let answer = key.split("_")[3];
+
+            if (sectionsObject[section] === undefined) {
+                sectionsObject[section] = {"questions":[],"notes":[]}
+            }
+
+            if ( data2[key] !== false && data2[key] !== "" ) {
+
+                if (answer != "notes")
+                    sectionsObject[section]["questions"].push({question:question, answer:answer})
+                else
+                    sectionsObject[section]["notes"].push({question:question, notes:data[key]});
+            }
+
+        });
+        console.log("here")
+        console.log(JSON.stringify(sectionsObject))
+        console.log("-------")
+        let quetionsBySections = manipulateSections(sectionsObject)
+        console.log(JSON.stringify(quetionsBySections))
+
+        const rowToBeInserted = []
+
+        Object.keys(quetionsBySections).forEach((key) => {
+            Object.keys(quetionsBySections[key]).forEach((question) => {
+                console.log(`section-${key} ${question}`)
+                let answers = '';
+                let notes = '';
+                Object.keys(quetionsBySections[key][question]).forEach((answer) => {
+                    if (answer != "notes") {
+                        console.log(`section-${key} ${question} ${answer}`)
+                        answers += `${answer} `
+                    }
+                    else {
+                        console.log(`section-${key} ${question} ${answer} ${quetionsBySections[key][question][answer]}`)
+                        notes = quetionsBySections[key][question][answer]
+                    }
+                })
+                //insert question,note,section,user,form,quesionary
+
+                const section = key;
+                const questionId = question.split("-")[1];
+                const answer = answers;
+                const note = notes;
+
+                console.log(`${section}, ${questionId}, ${answer}, ${note}, ${user.user.id}, ${formId}}`);
+
+                rowToBeInserted.push({section_id:section, question_id:questionId, answer:answer, notes:note, user_id:user.user.id, form_id:formId})
+            })
+
+        });
+        let questionaryId = 0;
+
+        if (rowToBeInserted.length > 0) {
+
+            const {data, error} = await supabase
+                .from('questionaries')
+                .insert([
+                    {user_id: user.user.id, form_id: formId}
+                ]).select('id')
+            if (data) {
+                console.log(data)
+                questionaryId = data[0].id;
+
+            }
+            if (error) {
+                console.log(error)
+            }
+        }
+
+        const rowsWithQuestionaryId = rowToBeInserted.map((row) => {
+            return {
+                ...row,
+                questionary_id: questionaryId
+            }
+        });
+        const {data: dataInserted, error:errorInserted} = await supabase
+            .from('ans')
+            .insert(rowsWithQuestionaryId)
+        if (dataInserted) {
+            console.log(dataInserted)
+        }
+        if (errorInserted) {
+            console.log(errorInserted)
+        }
+        setIsLoading(false)
+        navigation.navigate("Home")
+
+    }
 
     async function onSubmit(data) {
+
+
         setIsLoading(true)
         let sectionsObject = {}
         Object.keys(data).forEach((key) => {
@@ -175,30 +277,35 @@ export default FormQuestions = (props) => {
     }
 
     let index = 0;
+    const MemoizedQuestion = React.memo(Question);
+
     return (
-        <ScrollView>
-            <View>
-                <Dialog visible={isLoading}><Dialog.Loading></Dialog.Loading></Dialog>
-                 {isLoading===false &&  sections.map((section) => {
-                    return (<React.Fragment key={`${index++}_section`}>
-                        <Text key={`${section.id}_${index++}_title`} style={styles.section}>{section.id}-{section.name_section}</Text>
-                          {section.questions.map((question) => {
-                             return(
-                                 <React.Fragment key={`${section}_${question.id}_question`}>
-                                      <Text key={`${question.id}_${section.id}_title`} style={styles.question}>{question.question}</Text>
-                                      <Question key={`${question.id}_${section.id}`} control={control} section={`section${section.id}`} question={`question${question.id}`}  />
-                                    </React.Fragment>
-                             )
-                          })}
-                    </React.Fragment>)
-                })
-                }
+        <>
+            <Dialog isVisible={isLoading}><Dialog.Loading /></Dialog>
+        <FlatList
+            data={sections}
+            renderItem={({ item: section }) => (
+                <React.Fragment key={`${section.id}`}>
+                    <Text key={`${section.id}_title`} style={styles.section}>{section.id}-{section.name_section}</Text>
+                    {section.questions.map((question) => {
+                        return (
+                            <React.Fragment key={`${section}_${question.id}`}>
+                                <Text key={`${question.id}_title`} style={styles.question}>{question.question}</Text>
+                                <MemoizedQuestion key={`${question.id}`} control={control} section={`section${section.id}`} question={`question${question.id}`} />
+                            </React.Fragment>
+                        );
+                    })}
+                </React.Fragment>
+            )}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            ListFooterComponent={() => (
+                    <Button title="Enviar Datos!" onPress={()=>{submit2().catch( e=>console.log(e))}} />
+            )}
 
+            removeClippedSubviews={true}
+        />
 
-                {isLoading != true?  <Button  title="Submit" onPress={handleSubmit(onSubmit)}/>:null}
-            </View>
-        </ScrollView>
-
+        </>
     )
 }
 const styles = StyleSheet.create({

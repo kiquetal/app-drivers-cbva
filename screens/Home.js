@@ -4,6 +4,7 @@ import { Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AuthContext } from '../contexts/AuthContext';
 
+
 const Home = (props) => {
     const { navigation } = props;
 
