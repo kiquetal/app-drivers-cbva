@@ -3,7 +3,8 @@ import {View,  StyleSheet, ScrollView} from "react-native";
 import  {useEffect, useState} from "react";
 import {supabase} from "../lib/supabase";
 import {Cell, Col, Row, Rows, Table, TableWrapper} from "react-native-table-component";
-import {Button, Dialog, Text} from "@rneui/themed";
+import {Button, Dialog, Overlay, Text} from "@rneui/themed";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export default DetailQuestionaryScreen = (props) =>  {
 
@@ -13,6 +14,11 @@ export default DetailQuestionaryScreen = (props) =>  {
 
     const [isLoading, setIsLoading] = useState(true);
     const [questionaries, setQuestionaries] = useState([])
+
+    const [visibleForDelete, setVisibleForDelete] = useState(false);
+    const toggleOverlayForDelete = () => {
+        setVisibleForDelete(!visibleForDelete);
+    }
     useEffect( () => {
 
         const loadDetailQuestionary = async () => {
@@ -49,6 +55,25 @@ export default DetailQuestionaryScreen = (props) =>  {
 
     const sections = Array.from(new Set(tableData.slice(1).map(row => row[0])));
     const sectionsFromQuestionaries = Array.from(new Set(questionaries.map(row => row.sections.name_section)));
+
+        const deleteQuestionary = async () => {
+            const id = props.route.params.id;
+            console.log("id", id);
+            setIsLoading(true);
+            const {data, error} = await supabase.from('ans').delete().eq('questionary_id', id);
+            if (error) {
+                console.log("Error en delete", error);
+            }
+
+            const {data2, error2} = await supabase.from('questionaries').delete().eq('id', id);
+            if (error) {
+                console.log("Error en delete", error);
+            }
+            setIsLoading(false);
+            navigation.replace('Questionaries',
+                null,null,Math.random().toString());
+        };
+
     return (
         <ScrollView style={{ backgroundColor: '#f0f0f0' }}>
             <Dialog visible={isLoading}>
@@ -75,11 +100,16 @@ export default DetailQuestionaryScreen = (props) =>  {
             <View style={{ flexDirection: 'row', flexWrap:'wrap', justifyContent: 'center', margin: 10 }}>
                 <Button buttonStyle={{marginLeft:2}} onPress={() => navigation.navigate('Questionaries')}>Regresar</Button>
                 <Button  buttonStyle={{marginLeft:5}} onPress={() => navigation.navigate('Questionary')}>Exportar csv</Button>
-                <Button buttonStyle={{marginLeft:5}} onPress={() => console.log(`borrar ${props.route.params.id}`)}>Borrar </Button>
+                <Button buttonStyle={{marginLeft:5}} onPress={() => setVisibleForDelete(true) }>Borrar </Button>
                 <Button buttonStyle={{marginLeft:5, marginTop:10}} onPress={() => navigation.navigate('MenuForm',{
                     screen: 'FormQuestionsOpeartors'
                 })}>Agregar nuevo cuestionario</Button>
 
+                <Overlay isVisible={visibleForDelete} overlayStyle={{justifyContent:'center',alignContent:'center'} } onBackdropPress={toggleOverlayForDelete} >
+                    <Text>¿Estas seguro de borrar el cuestionario?</Text>
+                    <Button icon={<Icon name="check" size={15} color="green"/>} buttonStyle={{width:100, alignSelf:'center'}} onPress={async ()=>  {  await deleteQuestionary(); toggleOverlayForDelete()}}>Confirmar</Button>
+                    <Button icon={<Icon name="warning" size={15} color="yellow"/>} buttonStyle={{width:100, alignSelf:'center'}} onPress={()=>toggleOverlayForDelete()}>Cancelar</Button>
+                </Overlay>
             </View>
         </ScrollView>
     );
