@@ -6,6 +6,7 @@ import {supabase} from "../lib/supabase";
 import {Row, Rows, Table} from "react-native-table-component";
 
 const { width } = Dimensions.get("window");
+
 export default function QuestionariesScreen(props) {
 
     const { navigation } = props;
@@ -17,8 +18,16 @@ export default function QuestionariesScreen(props) {
     const [headerData, setHeaderData] = useState(['ID', 'Fecha', 'Form','Action'])
     useEffect(() => {
 
+
+
+
         const loadQuestionaries = async () => {
             try {
+
+                // check if the data exists on cache otherwise execute the next portion of code
+
+
+
                 const { data, error } = await supabase
                     .from('questionaries')
 

@@ -2,10 +2,11 @@ import * as React from 'react';
 import {ScrollView, View, StyleSheet} from "react-native";
 import {Button, Dialog, Input, Overlay, Text} from "@rneui/themed";
 import { useForm, Controller} from "react-hook-form";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Question from "../components/Question";
 import {supabase} from "../lib/supabase";
 import {manipulateSections} from "../lib/formLib";
+import {AuthContext} from "../contexts/AuthContext";
 
 export default FormQuestions = (props) => {
 
@@ -17,18 +18,18 @@ export default FormQuestions = (props) => {
     const [sections, setSections] = useState([])
     const [user, setUser] = useState(null)
     const [formId,setFormId] = useState(0)
+
+    const { cache } = useContext(AuthContext)
     useEffect(() => {
         const readDatabase = async () => {
-            const {data, error} = await supabase
-                .from('sections')
-                .select(`*, questions(question,id )`)
-                .order('id', {ascending: true})
-                .order('id',{foreignTable: 'questions', ascending: true})
 
-            if (data) {
+
+            if (await cache.peek("questions-operators"))
+            {
+                console.log('retrieve from cache');
+               const data_cache = await  cache.get("questions-operators");
                 setIsLoading(false)
-
-                const onlySectionWithQuestions = data.filter((section) => section.questions.length > 0)
+                const onlySectionWithQuestions = data_cache.filter((section) => section.questions.length > 0)
                 console.log('first fitler',JSON.stringify(onlySectionWithQuestions))
                 if (onlySectionWithQuestions.length > 0) {
                     setFormId(onlySectionWithQuestions[0].form_id)
@@ -36,10 +37,31 @@ export default FormQuestions = (props) => {
                 setSections(onlySectionWithQuestions)
 
             }
-            if (error) {
-                console.log(error)
-                setIsLoading(false)
+            else {
+                console.log("retrieve from database");
+                const {data, error} = await supabase
+                    .from('sections')
+                    .select(`*, questions(question,id )`)
+                    .order('id', {ascending: true})
+                    .order('id', {foreignTable: 'questions', ascending: true})
 
+                if (data) {
+                    setIsLoading(false)
+                    const onlySectionWithQuestions = data.filter((section) => section.questions.length > 0)
+                    console.log('first fitler', JSON.stringify(onlySectionWithQuestions))
+                    if (onlySectionWithQuestions.length > 0) {
+                        setFormId(onlySectionWithQuestions[0].form_id)
+                    }
+                    setSections(onlySectionWithQuestions)
+                    console.log("saving in cache");
+                    await  cache.set("questions-operators", data)
+
+                }
+                if (error) {
+                    console.log(error)
+                    setIsLoading(false)
+
+                }
             }
             if (user === null) {
                 const {data, error} = await supabase.auth.getUser()
@@ -58,6 +80,7 @@ export default FormQuestions = (props) => {
 
 
     async function onSubmit(data) {
+        setIsLoading(true)
 
         let sectionsObject = {}
         Object.keys(data).forEach((key) => {
@@ -85,6 +108,7 @@ export default FormQuestions = (props) => {
         let quetionsBySections = manipulateSections(sectionsObject)
         console.log(JSON.stringify(quetionsBySections))
         const rowToBeInserted = []
+
         Object.keys(quetionsBySections).forEach((key) => {
             Object.keys(quetionsBySections[key]).forEach((question) => {
               console.log(`section-${key} ${question}`)
@@ -114,7 +138,9 @@ export default FormQuestions = (props) => {
 
         });
         let questionaryId = 0;
+
         if (rowToBeInserted.length > 0) {
+            setIsLoading(true)
             const {data, error} = await supabase
                 .from('questionaries')
                 .insert([
@@ -145,6 +171,7 @@ export default FormQuestions = (props) => {
         if (errorInserted) {
             console.log(errorInserted)
         }
+        setIsLoading(false)
         navigation.navigate("Home")
     }
 

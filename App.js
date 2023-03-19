@@ -15,7 +15,19 @@ import QuestionaryStack from "./screens/QuestionaryStack";
 import MenuFormStack from "./screens/MenuFormStack";
 const Stack = createNativeStackNavigator();
 
+import { Cache} from "react-native-cache";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function App() {
+
+    const cache = new Cache({
+        namespace: "myapp",
+        policy: {
+            stdTTL: 60 * 60 * 24 * 1, // 1 day
+        },
+        backend: AsyncStorage,
+    });
+
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {
             switch (action.type) {
@@ -114,7 +126,7 @@ export default function App() {
 
 
     return (
-        <AuthContext.Provider value={ {authContext, state} } >
+        <AuthContext.Provider value={ {authContext, state, cache} } >
               <NavigationContainer>
                 <Stack.Navigator id={"Parent"}>
                     { console.log(`state-navigator`,state.userToken)}
