@@ -68,7 +68,7 @@ export default DetailQuestionaryScreen = (props) =>  {
     ];
 
     const sections = Array.from(new Set(tableData.slice(1).map(row => row[0])));
-    const sectionsFromQuestionaries = Array.from(new Set(questionaries.map(row => row.sections.name_section)));
+    const sectionsFromQuestionaries = Array.from(new Set(questionaries.map(row =>  row.sections.name_section)));
 
         const deleteQuestionary = async () => {
             const id = props.route.params.id;
@@ -101,10 +101,11 @@ export default DetailQuestionaryScreen = (props) =>  {
             <Table borderStyle={{ borderWidth: 1, borderColor: '#4347c2' }} style={{ margin: 10 }}>
                 {sectionsFromQuestionaries.map((section, index) => {
                     const filteredRows = questionaries.filter(row => row.sections.name_section === section);
+                    const idSection = filteredRows[0].section_id;
                     console.log(filteredRows)
                     return (
                         <React.Fragment key={index}>
-                            <Row data={[section]} style={styles.head} textStyle={styles.headTitle} />
+                            <Row data={[`${idSection}-${section}`]} style={styles.head} textStyle={styles.headTitle} />
                             {filteredRows.map((row, index) => (
                                 <React.Fragment key={`${index}_f`}>
                                     <Row data={[row.questions.question]} textStyle={styles.question} style={styles.questionHeader} />

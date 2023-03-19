@@ -81,7 +81,6 @@ export default FormQuestions = (props) => {
 
     async function onSubmit(data) {
         setIsLoading(true)
-
         let sectionsObject = {}
         Object.keys(data).forEach((key) => {
             let section = key.split("_")[0];
@@ -180,7 +179,7 @@ export default FormQuestions = (props) => {
         <ScrollView>
             <View>
                 <Dialog visible={isLoading}><Dialog.Loading></Dialog.Loading></Dialog>
-                 {sections.map((section) => {
+                 {isLoading===false &&  sections.map((section) => {
                     return (<React.Fragment key={`${index++}_section`}>
                         <Text key={`${section.id}_${index++}_title`} style={styles.section}>{section.id}-{section.name_section}</Text>
                           {section.questions.map((question) => {
