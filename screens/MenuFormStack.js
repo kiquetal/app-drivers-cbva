@@ -10,7 +10,7 @@ export default MenuForm = (props) => {
 
     return (
       <Stack.Navigator>
-            <Stack.Screen name="FormSelection" component={FormSelectionScreen}   options={({route})=>( {title:'FormSelection'})} />
+            <Stack.Screen name="FormSelection" component={FormSelectionScreen}   options={({route})=>( {title:'Formularios '})} />
             <Stack.Screen name="FormQuestionsOpeartors" component={FormQuestionsScreen} options={({route})=>( {title: `Operadores de móviles `})}/>
       </Stack.Navigator>
     )

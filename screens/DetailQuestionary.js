@@ -14,7 +14,7 @@ export default DetailQuestionaryScreen = (props) =>  {
 
     const [isLoading, setIsLoading] = useState(true);
     const [questionaries, setQuestionaries] = useState([])
-
+    const [dateQuestionary, setDateQuestionary] = useState("")
     const [visibleForDelete, setVisibleForDelete] = useState(false);
     const toggleOverlayForDelete = () => {
         setVisibleForDelete(!visibleForDelete);
@@ -25,7 +25,7 @@ export default DetailQuestionaryScreen = (props) =>  {
             setIsLoading(true);
         const { data, error } = await    supabase.from('ans')
                 .select(`*, questions(question),sections(name_section),
-                questionaries(id)`)
+                questionaries(id,created_at)`)
             .eq('questionary_id',id)
         if (error)
         {
@@ -35,7 +35,21 @@ export default DetailQuestionaryScreen = (props) =>  {
             setIsLoading(false);
             setQuestionaries(data)
         }
+        const loadDateQuestionary = async () => {
 
+            const { data, error } = await    supabase.from('questionaries')
+                .select(`created_at`)
+            .eq('id',id)
+            if (error)
+            {
+                console.log("Error en detail",error);
+            }
+            console.log(JSON.stringify(data))
+            setDateQuestionary(data[0].created_at)
+
+        }
+
+        loadDateQuestionary();
         loadDetailQuestionary();
         }, [navigation]
 
@@ -70,8 +84,10 @@ export default DetailQuestionaryScreen = (props) =>  {
                 console.log("Error en delete", error);
             }
             setIsLoading(false);
-            navigation.replace('Questionaries',
-                null,null,Math.random().toString());
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Questionaries' }],
+            })
         };
 
     return (
@@ -79,6 +95,9 @@ export default DetailQuestionaryScreen = (props) =>  {
             <Dialog visible={isLoading}>
                 <Dialog.Loading />
             </Dialog>
+            <View>
+                <Text style={{ textAlign: 'center', color:'black', fontSize: 20, fontWeight: 'bold', margin: 10 }}>{`${dateQuestionary.substring(0,dateQuestionary.search("T"))}`}</Text>
+            </View>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#4347c2' }} style={{ margin: 10 }}>
                 {sectionsFromQuestionaries.map((section, index) => {
                     const filteredRows = questionaries.filter(row => row.sections.name_section === section);
