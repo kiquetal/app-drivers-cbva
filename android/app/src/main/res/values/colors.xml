@@ -1,4 +1,5 @@
 <resources>
   <color name="colorPrimary">#cccccc</color>
   <color name="colorPrimaryDark">#ffffff</color>
+  <color name="iconBackground">#FFFFFF</color>
 </resources>

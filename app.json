@@ -4,6 +4,7 @@
     "slug": "app-drivers-cbva",
     "scheme": "myapp",
     "version": "1.2.0",
+    "icon":"playstore.png",
     "primaryColor": "#cccccc",
     "assetBundlePatterns": [
       "**/*"
