@@ -108,7 +108,7 @@ export default DetailQuestionaryScreen = (props) =>  {
                             <Row data={[`${idSection}-${section}`]} style={styles.head} textStyle={styles.headTitle} />
                             {filteredRows.map((row, index) => (
                                 <React.Fragment key={`${index}_f`}>
-                                    <Row data={[row.questions.question]} textStyle={styles.question} style={styles.questionHeader} />
+                                    <Row data={[`>> ${row.questions.question} <<`]} textStyle={styles.question} style={styles.questionHeader} />
                                     <Row data={[row.answer]} style={styles.row} textStyle={styles.text} />
                                     {row.notes > "" && <Row data={[row.notes]} textStyle={styles.text} key={`${index}_odd`} />}
                                 </React.Fragment>

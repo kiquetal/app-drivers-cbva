@@ -290,7 +290,7 @@ export default FormQuestions = (props) => {
                     {section.questions.map((question) => {
                         return (
                             <React.Fragment key={`${section}_${question.id}`}>
-                                <Text key={`${question.id}_title`} style={styles.question}>{question.question}</Text>
+                                <Text key={`${question.id}_title`} style={styles.question}>{'>> '}{question.question}{' <<'} </Text>
                                 <MemoizedQuestion key={`${question.id}`} control={control} section={`section${section.id}`} question={`question${question.id}`} />
                             </React.Fragment>
                         );
