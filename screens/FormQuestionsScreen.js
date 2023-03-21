@@ -299,7 +299,7 @@ export default FormQuestions = (props) => {
             )}
             keyExtractor={(item, index) => `${item.id}-${index}`}
             ListFooterComponent={() => (
-                    <Button title="Enviar Datos!" onPress={()=>{submit2().catch( e=>console.log(e))}} />
+                    <Button title="Enviar Datos!" onPress={handleSubmit(onSubmit)} />
             )}
 
             removeClippedSubviews={true}
