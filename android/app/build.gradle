@@ -113,12 +113,12 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.appdriverscbva'
+    namespace 'me.cresterida.cbvaapp'
     defaultConfig {
-        applicationId 'com.anonymous.appdriverscbva'
+        applicationId 'me.cresterida.cbvaapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
+        versionCode 1
         versionName "1.2.0"
     }
 
@@ -137,14 +137,15 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-	release {
- 		if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+
+   release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
                 storeFile file(MYAPP_UPLOAD_STORE_FILE)
                 storePassword MYAPP_UPLOAD_STORE_PASSWORD
                 keyAlias MYAPP_UPLOAD_KEY_ALIAS
                 keyPassword MYAPP_UPLOAD_KEY_PASSWORD
             }
-	}
+        }
 
     }
     buildTypes {

@@ -2,7 +2,7 @@
   "expo": {
     "name": "app-drivers-cbva",
     "slug": "app-drivers-cbva",
-    "scheme": "myapp",
+    "scheme": "cbvaapp",
     "version": "1.2.0",
     "icon":"playstore.png",
     "primaryColor": "#cccccc",
@@ -10,10 +10,10 @@
       "**/*"
     ],
     "android": {
-      "package": "com.anonymous.appdriverscbva"
+      "package": "me.cresterida.cbvaapp"
     },
     "ios": {
-      "bundleIdentifier": "com.anonymous.appdriverscbva"
+      "bundleIdentifier": "me.cresterida.cbvaapp"
     },
     "extra": {
       "eas": {
@@ -22,5 +22,5 @@
     },
     "jsEngine": "hermes"
   },
-  "name": "app-drivers-cbva"
+  "name": "cbvaapp"
 }

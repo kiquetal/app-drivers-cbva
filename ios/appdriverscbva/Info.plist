@@ -25,8 +25,8 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>myapp</string>
-          <string>com.anonymous.appdriverscbva</string>
+          <string>cbvaapp</string>
+          <string>me.cresterida.cbvaapp</string>
         </array>
       </dict>
       <dict>
