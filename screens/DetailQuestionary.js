@@ -5,9 +5,9 @@ import {supabase} from "../lib/supabase";
 import {Cell, Col, Row, Rows, Table, TableWrapper} from "react-native-table-component";
 import {Button, Dialog, Overlay, Text} from "@rneui/themed";
 import Icon from "react-native-vector-icons/FontAwesome";
+import * as FileSystem  from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
-import RNFetchBlob from "rn-fetch-blob";
-import * as RNFS from "react-native-fs";
 export default DetailQuestionaryScreen = (props) =>  {
 
     const { navigation } = props;
@@ -96,15 +96,17 @@ export default DetailQuestionaryScreen = (props) =>  {
 
         //write a csv using rn-fetch-blob
         try {
-            const {fs} = RNFetchBlob;
-
-            const path = RNFS.DocumentDirectoryPath + `/questionary-${props.route.params.id}.csv`;
-            const headers = 'Section,Question,Answer,Notes\n';
-            const data = questionaries.map(row => `${row.sections.name_section},${row.questions.question},${row.answer},${row.notes}`).join('  ');
-            await fs.writeFile(path, headers + data, 'utf8');
-            console.log('file written');
-            console.log(headers);
-            console.log(JSON.stringify(data));
+            const date = new Date().toISOString();
+            console.log("here",date.substring(0,17))
+            const path = `${FileSystem.documentDirectory}${date.substring(0,16).replace(":","_")}-questionary-${props.route.params.id}.csv`;
+            const headers = 'Sección,Pregunta,Respuesta,Notas\n';
+            const data = questionaries.map(row => `${row.sections.name_section},${">>"+row.questions.question + "<<"},${row.answer},${row.notes > ""?row.notes:"--"}`).join('\n');
+            const file = await FileSystem.writeAsStringAsync(path, headers + data, { encoding: FileSystem.EncodingType.UTF8 })
+            await Sharing.shareAsync(path, {
+                mimeType: 'text/csv',
+                dialogTitle: 'Export to CSV',
+                UTI: `${date.substring(0,16).replace(":","_")}-cuestionario-${props.route.params.id}.csv`,
+            });
         }
         catch (e) {
             console.log(e);
