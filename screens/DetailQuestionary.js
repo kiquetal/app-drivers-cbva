@@ -6,6 +6,8 @@ import {Cell, Col, Row, Rows, Table, TableWrapper} from "react-native-table-comp
 import {Button, Dialog, Overlay, Text} from "@rneui/themed";
 import Icon from "react-native-vector-icons/FontAwesome";
 
+import RNFetchBlob from "rn-fetch-blob";
+import * as RNFS from "react-native-fs";
 export default DetailQuestionaryScreen = (props) =>  {
 
     const { navigation } = props;
@@ -90,6 +92,24 @@ export default DetailQuestionaryScreen = (props) =>  {
             })
         };
 
+    const exportToCsv = async () => {
+
+        //write a csv using rn-fetch-blob
+        try {
+            const {fs} = RNFetchBlob;
+
+            const path = RNFS.DocumentDirectoryPath + `/questionary-${props.route.params.id}.csv`;
+            const headers = 'Section,Question,Answer,Notes\n';
+            const data = questionaries.map(row => `${row.sections.name_section},${row.questions.question},${row.answer},${row.notes}`).join('  ');
+            await fs.writeFile(path, headers + data, 'utf8');
+            console.log('file written');
+            console.log(headers);
+            console.log(JSON.stringify(data));
+        }
+        catch (e) {
+            console.log(e);
+        }
+    };
     return (
         <ScrollView style={{ backgroundColor: '#f0f0f0' }}>
             <Dialog visible={isLoading}>
@@ -119,7 +139,7 @@ export default DetailQuestionaryScreen = (props) =>  {
             </Table>
             <View style={{ flexDirection: 'row', flexWrap:'wrap', justifyContent: 'center', margin: 10 }}>
                 <Button buttonStyle={{marginLeft:2}} onPress={() => navigation.navigate('Questionaries')}>Regresar</Button>
-                <Button  buttonStyle={{marginLeft:5}} onPress={() => navigation.navigate('Questionary')}>Exportar csv</Button>
+                <Button  buttonStyle={{marginLeft:5}} onPress={exportToCsv}>Exportar csv</Button>
                 <Button buttonStyle={{marginLeft:5}} onPress={() => setVisibleForDelete(true) }>Borrar </Button>
                 <Button buttonStyle={{marginLeft:5, marginTop:10}} onPress={() => navigation.navigate('MenuForm',{
                     screen: 'FormQuestionsOpeartors'
