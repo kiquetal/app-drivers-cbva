@@ -95,14 +95,14 @@ export default EventScreen = (props) =>  {
             </View>
             <Modal visible={modalVisible} animationType="slide">
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={{fontSize: 20}}>Enter marker name:</Text>
+                    <Text style={{fontSize: 20}}>Ingrese nombre del punto de interes:</Text>
                     <TextInput
-                        style={{fontSize: 20, marginVertical: 20, borderWidth: 1, padding: 10}}
+                        style={{fontSize: 20, marginVertical: 20, borderWidth: 1, padding: 10, width: 70}}
                         value={newMarkerName}
 
                         onChangeText={setNewMarkerName}
                     />
-                    <Button title="Save" onPress={saveMarker} />
+                    <Button title="Guardar" onPress={saveMarker} />
                 </View>
             </Modal>
         </View>
