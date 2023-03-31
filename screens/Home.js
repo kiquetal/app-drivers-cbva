@@ -48,6 +48,20 @@ const Home = (props) => {
                     style={[styles.button]}
                 />
                 <Button
+                    title={'Event Screen'}
+                    onPress={() => navigation.navigate('EventScreen')}
+                    icon={
+                        <Icon
+                            name="calendar"
+                            color="#FFFFFF"
+                            size={18}
+                            style={styles.icon}
+                        />
+                    }
+                    style={[styles.button]}
+                />
+
+                <Button
                     title={'Salir'}
                     onPress={() => authContext.signOut()}
                     icon={

@@ -20,7 +20,16 @@
         "projectId": "3347f001-a14d-4d85-8c47-dde9dd06f65d"
       }
     },
-    "jsEngine": "hermes"
+    "jsEngine": "hermes",
+    "plugins":[
+	    [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsImpl": "maplibre",
+	  "RNMapboxMapsDownloadToken":"sk.eyJ1Ijoia2lxdWV0YWwiLCJhIjoiY2xmdmdncGpyMDI4MzNmcnlvZ3dpdHN3byJ9.PlQfBaVd-vqDx7QFeB2Wmw"
+        }
+      ]
+    ]
   },
   "name": "cbvaapp"
 }

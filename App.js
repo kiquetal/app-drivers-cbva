@@ -17,6 +17,12 @@ const Stack = createNativeStackNavigator();
 
 import { Cache} from "react-native-cache";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Mapbox from "@rnmapbox/maps";
+import { MAPBOX_TOKEN } from "@env";
+import EventScreen from "./screens/EventScreen";
+Mapbox.setWellKnownTileServer('Mapbox');
+
+Mapbox.setAccessToken(MAPBOX_TOKEN);
 
 export default function App() {
 
@@ -138,6 +144,7 @@ export default function App() {
                         <Stack.Screen name={"QuestionariesStack"} component={QuestionaryStack} options={{ headerShown: false }} />
                          <Stack.Screen name={"FormQuestions"} component={FormQuestions} options={{ headerShown: true }} />
                           <Stack.Screen name={"MenuForm"} component={MenuFormStack} options={{ headerShown: false }} />
+                            <Stack.Screen name={"EventScreen"} component={EventScreen} options={{ headerShown: false }} />
                         </>
                         )}
 
