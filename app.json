@@ -28,6 +28,12 @@
           "RNMapboxMapsImpl": "maplibre",
 	  "RNMapboxMapsDownloadToken":"sk.eyJ1Ijoia2lxdWV0YWwiLCJhIjoiY2xmdmdncGpyMDI4MzNmcnlvZ3dpdHN3byJ9.PlQfBaVd-vqDx7QFeB2Wmw"
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
       ]
     ]
   },

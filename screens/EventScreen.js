@@ -1,9 +1,13 @@
 import * as React from 'react';
-import {View, StyleSheet, FlatList, Text, Modal, TextInput, Button} from "react-native";
+import {View, StyleSheet, FlatList, Text, Modal, TextInput, Button, AppState} from "react-native";
 import Mapbox from "@rnmapbox/maps";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
+import * as Location from "expo-location";
+import {getForegroundPermissionsAsync} from "expo-location";
 export default EventScreen = (props) =>  {
+    const { navigation } = props;
+
     const [markers, setMarkers] = useState([]);
     const [newMarkerName, setNewMarkerName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
@@ -37,14 +41,14 @@ export default EventScreen = (props) =>  {
         const updatedMarkers = markers.map((marker) => {
             if (marker.name === item.name) {
                 if (!marker.hasOwnProperty('color')) {
-                marker.color = 'purple'; // replace with desired color
+                marker.color = 'red'; // replace with desired color
                 } else {
                     console.log("have color", marker.color)
-                    if (marker.color == 'purple') {
-                        marker.color = 'blue'; // replace with desired color
+                    if (marker.color == 'red') {
+                        marker.color = '#357eb9'; // replace with desired color
                     } else {
                         console.log("change to red")
-                        marker.color = 'purple'; // replace with desired color
+                        marker.color = 'red'; // replace with desired color
                     }
                 }
             }
@@ -57,6 +61,50 @@ export default EventScreen = (props) =>  {
 
 
     };
+
+    useEffect(() => {
+        const getLocation= async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
+            }
+            try {
+                let location = await Location.getCurrentPositionAsync({});
+                console.log("location", location);
+            }
+            catch (e) {
+                console.log("exception- obtaining location", e);
+            }
+            //  setCurrentLocation([location.coords.longitude, location.coords.latitude]);
+        }
+        getLocation().then(r => console.log("r", r)).catch(e => console.log("exception whey", e));
+    },[navigation]);
+
+    const [locationStatus, setLocationStatus] = useState();
+
+    const appState = useRef(AppState.currentState);
+    const [, setAppStateVisible] = useState(appState.current);
+
+    const handleAppStateChange = async (nextAppState) => {
+        if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+            console.log('App has come to the foreground!');
+            setLocationStatus(await getForegroundPermissionsAsync());
+        }
+
+        console.log("appState", appState.current);
+        appState.current = nextAppState;
+        setAppStateVisible(appState.current);
+    };
+
+    useEffect(() => {
+        console.log("gps change")
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+        return () => {
+            subscription.remove();
+        };
+    }, []);
+
     return (
         <View style={styles.page}>
             <View style={styles.container}>
@@ -88,9 +136,12 @@ export default EventScreen = (props) =>  {
                         </Mapbox.MarkerView>
                     ))}
                 </Mapbox.MapView>
+                <View>
+                    <Text style={{marginLeft:20, fontWeight:"bold"}}>Lugares indicados</Text>
+                </View>
                 <FlatList
                     data={markers}
-                    renderItem={({item}) => <Text onPress={()=>changeColorMarker(item)}>{item.name} </Text>}
+                    renderItem={({item}) => <Text style={{marginLeft:10}} onPress={()=>changeColorMarker(item)}>{item.name} </Text>}
                 />
             </View>
             <Modal visible={modalVisible} animationType="slide">
@@ -120,8 +171,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     container: {
-        height: 300,
-        width: 300,
+        height: 500,
+        width: 400,
     },
 });
 
