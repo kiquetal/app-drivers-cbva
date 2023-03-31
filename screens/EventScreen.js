@@ -1,14 +1,17 @@
 import * as React from 'react';
-import {View, StyleSheet, FlatList,Text} from "react-native";
+import {View, StyleSheet, FlatList, Text, Modal, TextInput, Button} from "react-native";
 import Mapbox from "@rnmapbox/maps";
 import {useState} from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 export default EventScreen = (props) =>  {
     const [markers, setMarkers] = useState([]);
-
+    const [newMarkerName, setNewMarkerName] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [currentLocation, setCurrentLocation] = useState([]);
     const addMarker = (longitude, latitude, name) => {
-        const newMarkers = [...markers, {longitude, latitude, name}];
-        setMarkers(newMarkers);
+        setModalVisible(true);
+        setCurrentLocation([longitude, latitude]);
+
     };
 
     const removeMarker = (index) => {
@@ -17,9 +20,48 @@ export default EventScreen = (props) =>  {
         newMarkers.splice(index, 1);
         setMarkers(newMarkers);
     };
+
+    function saveMarker() {
+
+        const newMarkers = [...markers, {longitude: currentLocation[0], latitude: currentLocation[1], name: newMarkerName}];
+        console.log("markers", newMarkers);
+        setMarkers(newMarkers);
+
+        setNewMarkerName('');
+        setModalVisible(false);
+    }
+
+    const changeColorMarker = (item) => {
+        console.log("identificar marker", item);
+
+        const updatedMarkers = markers.map((marker) => {
+            if (marker.name === item.name) {
+                if (!marker.hasOwnProperty('color')) {
+                marker.color = 'purple'; // replace with desired color
+                } else {
+                    console.log("have color", marker.color)
+                    if (marker.color == 'purple') {
+                        marker.color = 'blue'; // replace with desired color
+                    } else {
+                        console.log("change to red")
+                        marker.color = 'purple'; // replace with desired color
+                    }
+                }
+            }
+            console.log("marker", marker)
+            return marker;
+        });
+        setMarkers(updatedMarkers);
+
+
+
+
+    };
     return (
         <View style={styles.page}>
             <View style={styles.container}>
+
+
                 <Mapbox.MapView style={styles.map}
                                 onPress={(event) => {
                                     console.log(JSON.stringify(event.geometry))
@@ -39,19 +81,30 @@ export default EventScreen = (props) =>  {
                         <Mapbox.MarkerView
                             key={`marker-${index}`}
                             coordinate={[ marker.longitude, marker.latitude]}
-                            onCalloutPress={() => removeMarker(index)}
 
                             title={marker.name}
                         >
-                            <Icon name={'map-marker'}  size={30} color={'#437ec2'}  onPress={()=>removeMarker(index)}  />
+                            <Icon name={'map-marker'}  iconColor='red' size={30} color={ marker.color ? marker.color: '#357eb9'}  onPress={()=>removeMarker(index)}  />
                         </Mapbox.MarkerView>
                     ))}
                 </Mapbox.MapView>
                 <FlatList
                     data={markers}
-                    renderItem={({item}) => <Text onPress={()=>console.log("opress" + item.latitude +"-"+ item.longitude)}>{item.name}</Text>}
+                    renderItem={({item}) => <Text onPress={()=>changeColorMarker(item)}>{item.name} </Text>}
                 />
             </View>
+            <Modal visible={modalVisible} animationType="slide">
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{fontSize: 20}}>Enter marker name:</Text>
+                    <TextInput
+                        style={{fontSize: 20, marginVertical: 20, borderWidth: 1, padding: 10}}
+                        value={newMarkerName}
+
+                        onChangeText={setNewMarkerName}
+                    />
+                    <Button title="Save" onPress={saveMarker} />
+                </View>
+            </Modal>
         </View>
 
     );
