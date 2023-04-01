@@ -12,6 +12,7 @@ export default EventScreen = (props) =>  {
     const [newMarkerName, setNewMarkerName] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [currentLocation, setCurrentLocation] = useState([]);
+    const [homeLocation, setHomeLocation] = useState([]);
     const addMarker = (longitude, latitude, name) => {
         setModalVisible(true);
         setCurrentLocation([longitude, latitude]);
@@ -62,25 +63,6 @@ export default EventScreen = (props) =>  {
 
     };
 
-    useEffect(() => {
-        const getLocation= async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                console.log('Permission to access location was denied');
-                return;
-            }
-            try {
-                let location = await Location.getCurrentPositionAsync({});
-                console.log("location", location);
-            }
-            catch (e) {
-                console.log("exception- obtaining location", e);
-            }
-            //  setCurrentLocation([location.coords.longitude, location.coords.latitude]);
-        }
-        getLocation().then(r => console.log("r", r)).catch(e => console.log("exception whey", e));
-    },[navigation]);
-
     const [locationStatus, setLocationStatus] = useState();
 
     const appState = useRef(AppState.currentState);
@@ -100,10 +82,32 @@ export default EventScreen = (props) =>  {
     useEffect(() => {
         console.log("gps change")
         const subscription = AppState.addEventListener('change', handleAppStateChange);
-        return () => {
-            subscription.remove();
-        };
+     //   return () => {
+     //       subscription.remove();
+     //   };
     }, []);
+
+    useEffect(() => {
+        const getLocation= async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
+            }
+            console.log(await  Location.hasServicesEnabledAsync())
+            try {
+                let statusTwo = await Location.requestForegroundPermissionsAsync();
+                console.log("location", statusTwo);
+                let location = await Location.getCurrentPositionAsync({});
+
+            }
+            catch (e) {
+                console.log("exception- obtaining location", e);
+            }
+        }
+        getLocation().then(r => console.log("r", r)).catch(e => console.log("exception whey", e));
+    },[navigation]);
+
 
     return (
         <View style={styles.page}>
@@ -123,7 +127,7 @@ export default EventScreen = (props) =>  {
                 >
                     <Mapbox.Camera
                         zoomLevel={14}
-                        centerCoordinate={[-57.599674720852846,-25.300971658750942]}
+                        centerCoordinate={[ -74.08175, 4.60971]}
                     />
                     {markers.map((marker, index) => (
                         <Mapbox.MarkerView
