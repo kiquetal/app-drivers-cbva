@@ -282,6 +282,7 @@ export default FormQuestions = (props) => {
     return (
         <>
             <Dialog isVisible={isLoading}><Dialog.Loading /></Dialog>
+            <Text style={styles.section}>Movil: F2</Text>
         <FlatList
             data={sections}
             renderItem={({ item: section }) => (

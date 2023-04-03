@@ -21,7 +21,7 @@ import Mapbox from "@rnmapbox/maps";
 import { MAPBOX_TOKEN } from "@env";
 import EventScreen from "./screens/EventScreen";
 Mapbox.setWellKnownTileServer('Mapbox');
-
+console.log(MAPBOX_TOKEN)
 Mapbox.setAccessToken(MAPBOX_TOKEN);
 
 export default function App() {

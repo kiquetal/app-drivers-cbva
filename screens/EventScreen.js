@@ -96,9 +96,10 @@ export default EventScreen = (props) =>  {
             }
             console.log(await  Location.hasServicesEnabledAsync())
             try {
-                let statusTwo = await Location.requestForegroundPermissionsAsync();
-                console.log("location", statusTwo);
+            //    let statusTwo = await Location.requestForegroundPermissionsAsync();
+             //   console.log("location", statusTwo);
                 let location = await Location.getCurrentPositionAsync({});
+                console.log("obtaining data")
 
             }
             catch (e) {
