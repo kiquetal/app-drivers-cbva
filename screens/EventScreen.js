@@ -56,20 +56,55 @@ export default EventScreen = (props) =>  {
 
     };
 
+    const obtainHomeLocation = async () => {
+        try {
 
+            const subscription = await Location.watchPositionAsync(
+                { accuracy: Location.Accuracy.High, timeInterval: 2500, distanceInterval: 10 },
+                location => {
+                    console.log("find location",location);
+                    setHomeLocation([location.coords.longitude, location.coords.latitude])
+                }
+            );
+
+
+        }
+        catch (e) {
+            console.log("exception- obtaining location", e);
+        }
+
+    const handleAppStateChange = async (nextAppState) => {
+        if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+            console.log('App has come to the foreground!');
+            setLocationStatus(await getForegroundPermissionsAsync());
+        }
+
+        console.log("appState", appState.current);
+        appState.current = nextAppState;
+        setAppStateVisible(appState.current);
+    };
 
     useEffect(() => {
+        console.log("gps change")
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+     //   return () => {
+     //       subscription.remove();
+     //   };
+    }, []);
+
+    useEffect(() => {
+        setHomeLocation([2.1700, 41.3900])
         const getLocation= async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 console.log('Permission to access location was denied');
                 return;
             }
+            console.log(await  Location.hasServicesEnabledAsync())
             try {
-            //    let statusTwo = await Location.requestForegroundPermissionsAsync();
-             //   console.log("location", statusTwo);
+                let statusTwo = await Location.requestForegroundPermissionsAsync();
+                console.log("location", statusTwo);
                 let location = await Location.getCurrentPositionAsync({});
-                console.log("obtaining data")
 
             }
             catch (e) {
@@ -79,14 +114,18 @@ export default EventScreen = (props) =>  {
           getLocation();
     },[navigation]);
 
+    const  toggleModalVisisble = () => {
+        setModalVisible(!modalVisible);
+    }
 
     return (
         <View style={styles.page}>
             <View style={styles.container}>
 
-
+                <Button title={'Localizar posición'} onPress={()=>obtainHomeLocation()}/>
                 <Mapbox.MapView style={styles.map}
                                 onPress={(event) => {
+                                    console.log(JSON.stringify(event.geometry))
                                     addMarker(
                                         event.geometry.coordinates[0],
                                         event.geometry.coordinates[1],
@@ -97,7 +136,7 @@ export default EventScreen = (props) =>  {
                 >
                     <Mapbox.Camera
                         zoomLevel={14}
-                        centerCoordinate={[ -74.08175, 4.60971]}
+                        centerCoordinate={[homeLocation[0], homeLocation[1]]}
                     />
                     {markers.map((marker, index) => (
                         <Mapbox.MarkerView
@@ -117,7 +156,8 @@ export default EventScreen = (props) =>  {
                     renderItem={({item}) => <Text style={{marginLeft:10}} onPress={()=>changeColorMarker(item)}>{item.name} </Text>}
                 />
             </View>
-            <Modal visible={modalVisible} animationType="slide">
+            <Overlay visible={modalVisible} overlayStyle={{backgroundColor:'white',
+            height: 300}} animationType="slide" onBackdropPress={toggleModalVisisble}>
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{fontSize: 20}}>Ingrese nombre del punto de interes:</Text>
                     <TextInput
@@ -127,7 +167,7 @@ export default EventScreen = (props) =>  {
                     />
                     <Button title="Guardar" onPress={saveMarker} />
                 </View>
-            </Modal>
+            </Overlay>
         </View>
 
     );

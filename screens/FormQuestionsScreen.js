@@ -77,6 +77,7 @@ export default FormQuestions = (props) => {
         }
         readDatabase()
 
+        setMobileSelection(props.route.params.mobile)
     }, [navigation])
 
     const submit2 =  async () => {
@@ -330,6 +331,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#437ec2',
         color: 'white',
         padding: 10,
+    },
+    mobile : {
+        backgroundColor: '#437ec2',
+        color: 'white',
+        padding: 10,
+        fontWeight: 'bold'
     }
 })
 
