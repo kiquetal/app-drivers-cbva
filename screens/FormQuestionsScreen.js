@@ -19,6 +19,7 @@ export default FormQuestions = (props) => {
     const [user, setUser] = useState(null)
     const [formId,setFormId] = useState(0)
 
+    const [mobileSelection, setMobileSelection] = useState("")
     const { cache } = useContext(AuthContext)
     useEffect(() => {
         const readDatabase = async () => {
@@ -76,6 +77,7 @@ export default FormQuestions = (props) => {
         }
         readDatabase()
 
+        setMobileSelection(props.route.params.mobile)
     }, [navigation])
 
     const submit2 =  async () => {
@@ -282,6 +284,7 @@ export default FormQuestions = (props) => {
     return (
         <>
             <Dialog isVisible={isLoading}><Dialog.Loading /></Dialog>
+            <Text style={styles.mobile} >Móvil {mobileSelection}</Text>
         <FlatList
             data={sections}
             renderItem={({ item: section }) => (
@@ -328,6 +331,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#437ec2',
         color: 'white',
         padding: 10,
+    },
+    mobile : {
+        backgroundColor: '#437ec2',
+        color: 'white',
+        padding: 10,
+        fontWeight: 'bold'
     }
 })
 
