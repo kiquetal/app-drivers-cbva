@@ -11,7 +11,7 @@ export default function FormSelectionScreen(props) {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Button
                 buttonStyle={styles.screenButtonContainer}
-                onPress={() => navigation.navigate('FormQuestionsOpeartors')}
+                onPress={() => navigation.navigate('FormOperatorStack')}
             >
                 <View style={styles.screenIcon}>
                     <Icon name="wrench" size={20} color="#7f5af0" />

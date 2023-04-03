@@ -19,6 +19,7 @@ export default FormQuestions = (props) => {
     const [user, setUser] = useState(null)
     const [formId,setFormId] = useState(0)
 
+    const [mobileSelection, setMobileSelection] = useState("")
     const { cache } = useContext(AuthContext)
     useEffect(() => {
         const readDatabase = async () => {
@@ -282,7 +283,7 @@ export default FormQuestions = (props) => {
     return (
         <>
             <Dialog isVisible={isLoading}><Dialog.Loading /></Dialog>
-            <Text style={styles.section}>Add Movil: F2</Text>
+            <Text style={styles.mobile} >Móvil {mobileSelection}</Text>
         <FlatList
             data={sections}
             renderItem={({ item: section }) => (
