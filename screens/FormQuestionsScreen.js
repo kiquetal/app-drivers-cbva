@@ -247,7 +247,7 @@ export default FormQuestions = (props) => {
             const {data, error} = await supabase
                 .from('questionaries')
                 .insert([
-                    {user_id: user.user.id, form_id: formId}
+                    {user_id: user.user.id, form_id: formId, movil:mobileSelection}
                 ]).select('id')
             if (data) {
                 console.log(data)

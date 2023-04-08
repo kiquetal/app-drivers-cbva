@@ -48,7 +48,8 @@ export default FormSelectionMobile = (props) => {
         onPress={() => setMobile("F3")}
         />
 <Button
-    title="Completar formulario para el móvil seleccionado"
+    buttonStyle={{backgroundColor: '#3e81d7', borderWidth: 0, height:40, marginLeft: 50, marginTop:3, width:300}}
+    title="Llenar formulario para moviles"
     onPress={() => navigation.navigate("FormQuestionsOpeartors", {mobile: mobile})}
 />
     </View>

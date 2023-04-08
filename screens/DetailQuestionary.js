@@ -18,6 +18,7 @@ export default DetailQuestionaryScreen = (props) =>  {
     const [questionaries, setQuestionaries] = useState([])
     const [dateQuestionary, setDateQuestionary] = useState("")
     const [visibleForDelete, setVisibleForDelete] = useState(false);
+    const [movileSelection, setMovileSelected] = useState("");
     const toggleOverlayForDelete = () => {
         setVisibleForDelete(!visibleForDelete);
     }
@@ -27,7 +28,7 @@ export default DetailQuestionaryScreen = (props) =>  {
             setIsLoading(true);
         const { data, error } = await    supabase.from('ans')
                 .select(`*, questions(question),sections(name_section),
-                questionaries(id,created_at)`)
+                questionaries(id,created_at,movil)`)
             .eq('questionary_id',id)
         if (error)
         {
@@ -40,14 +41,15 @@ export default DetailQuestionaryScreen = (props) =>  {
         const loadDateQuestionary = async () => {
 
             const { data, error } = await    supabase.from('questionaries')
-                .select(`created_at`)
+                .select(`created_at, movil`)
             .eq('id',id)
             if (error)
             {
                 console.log("Error en detail",error);
             }
-            console.log(JSON.stringify(data))
+            console.log("load_date_questionary",JSON.stringify(data))
             setDateQuestionary(data[0].created_at)
+            setMovileSelected(data[0].movil)
 
         }
 
@@ -99,8 +101,8 @@ export default DetailQuestionaryScreen = (props) =>  {
             const date = new Date().toISOString();
             console.log("here",date.substring(0,17))
             const path = `${FileSystem.documentDirectory}${date.substring(0,16).replace(":","_")}-questionary-${props.route.params.id}.csv`;
-            const headers = 'Sección,Pregunta,Respuesta,Notas\n';
-            const data = questionaries.map(row => `${row.sections.name_section},${">>"+row.questions.question + "<<"},${row.answer},${row.notes > ""?row.notes:"--"}`).join('\n');
+            const headers = 'Sección,Pregunta,Respuesta,Notas,Movil\n';
+            const data = questionaries.map(row => `${row.sections.name_section},${">>"+row.questions.question + "<<"},${row.answer},${row.notes > ""?row.notes:"--"},${row.questionaries.movil}`).join('\n');
             const file = await FileSystem.writeAsStringAsync(path, headers + data, { encoding: FileSystem.EncodingType.UTF8 })
             await Sharing.shareAsync(path, {
                 mimeType: 'text/csv',
@@ -119,6 +121,8 @@ export default DetailQuestionaryScreen = (props) =>  {
             </Dialog>
             <View>
                 <Text style={{ textAlign: 'center', color:'black', fontSize: 20, fontWeight: 'bold', margin: 10 }}>{`${dateQuestionary.substring(0,dateQuestionary.search("T"))}`}</Text>
+                <Text style={{ textAlign: 'center', color:'black', fontSize: 20, fontWeight: 'bold', margin: 10 }}>{`Movil ${movileSelection} `}</Text>
+
             </View>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#4347c2' }} style={{ margin: 10 }}>
                 {sectionsFromQuestionaries.map((section, index) => {
