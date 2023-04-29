@@ -21,12 +21,12 @@ export default function FormSelectionScreen(props) {
 
             <Button
                 buttonStyle={styles.screenButtonContainer}
-                onPress={() => navigation.navigate('Screen2')}
+                onPress={() => navigation.navigate('MovimientoMovil')}
             >
                 <View style={styles.screenIcon}>
-                    <Icon name="gear" size={20} color="#7f5af0" />
+                    <Icon name="truck" size={20} color="#7f5af0" />
                 </View>
-                <Text style={styles.screenButtonText}>Material Menor</Text>
+                <Text style={styles.screenButtonText}>Movimiento de moviles</Text>
             </Button>
 
             <Button
