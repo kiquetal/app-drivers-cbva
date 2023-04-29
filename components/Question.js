@@ -32,7 +32,9 @@ export default Question = (props) =>  {
                                   checkedColor={"#000"} style={{marginTop: 0}}
                         />
                     )
-                    } name={`${props.section}_${props.question}_answer_no`}  control={props.control} defaultValue={""}
+                    } name={`${props.section}_${props.question}_answer_no`}
+                                control={props.control}
+                                defaultValue={""}
 
                     />
                     <Controller render={({field: {onChange,onBlur,value},fieldState}) => (
