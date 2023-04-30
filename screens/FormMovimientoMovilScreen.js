@@ -129,7 +129,9 @@ export default FormMovimientoMovilScreen = (props) => {
         }]
     const mySubmit = async (data) => {
 
-
+        console.log("algo")
+        console.log(errors)
+    console.log(data)
 
 
     };
@@ -140,6 +142,7 @@ export default FormMovimientoMovilScreen = (props) => {
         <TextRNE style={{color:"black"}}  >Movil</TextRNE>
                 <Controller  name="movil"
                              control={control}
+                             rules={{   required: true  }}
                              render={({field: {onChange, onBlur,value},fieldState}) => (
         <Dropdown data={movil_data}
                   placeholder={"Seleccione un movil"}
@@ -152,13 +155,18 @@ export default FormMovimientoMovilScreen = (props) => {
                   value={value}
         />
     )} defaultValue={""} />
+                {errors.movil && <TextRNE style={{color:"red"}}>Este campo es requerido</TextRNE>}
 
-                <Controller  name="km" render={({field: {onChange, onBlur,value},fieldState}) => (
+                <Controller
+                    rules={{   required: true  }}
+                    name="km" render={({field: {onChange, onBlur,value},fieldState}) => (
                                  <View>
          <TextRNE style={{color:"black"}}  >KM DE LLEGADA</TextRNE>
                 <Input placeholder="Ingrese Km" inputStyle={{color:"black"}}  onChangeText={onChange} value={value}  ></Input>
                                     </View>
-    )} defaultValue={""} control={control} />
+    )} defaultValue={""} control={control}  />
+
+                {errors.km && <TextRNE style={{color:"red"}}>Este campo es requerido</TextRNE>}
             </Card>
 
             <Card containerStyle={{backgroundColor:"white"}}>
@@ -177,8 +185,14 @@ export default FormMovimientoMovilScreen = (props) => {
                 />
             )}/>
 
+                <Controller  name="10_30_otro" control={control} defaultValue={""}
+                            render={({field: {onChange, onBlur,value},fieldState}) => (
+                <View>
                 <TextRNE style={{color:"black"}}  >10.30 OTRO (BA)</TextRNE>
                 <Input placeholder="Ingrese BA" inputStyle={{color:"black"}}   ></Input>
+                </View>
+            )} />
+
             </Card>
             <Card containerStyle={{backgroundColor:"white"}}>
                 <Card.Title style={{color:"black"}}>Tipo de Servicio</Card.Title>

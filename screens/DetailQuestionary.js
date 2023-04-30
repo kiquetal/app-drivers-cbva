@@ -41,7 +41,7 @@ export default DetailQuestionaryScreen = (props) =>  {
         const loadDateQuestionary = async () => {
 
             const { data, error } = await    supabase.from('questionaries')
-                .select(`created_at, movil`)
+                .select(`created_at, movil,form_id`)
             .eq('id',id)
             if (error)
             {
