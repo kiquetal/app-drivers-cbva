@@ -1,0 +1,44 @@
+create function public.isadmin() returns SETOF uuid
+    stable
+    security definer
+    SET search_path = public
+    language sql
+as
+$$
+    select user_id
+    from admins
+    where user_id = auth.uid()
+$$;
+
+alter function public.isadmin() owner to postgres;
+
+grant execute on function public.isadmin() to anon;
+
+grant execute on function public.isadmin() to authenticated;
+
+grant execute on function public.isadmin() to service_role;
+
+create function public.get_km_for_year_month(in_year integer, in_month integer) returns numeric
+    language plpgsql
+as
+$$
+DECLARE
+    count_value decimal;
+BEGIN
+    SELECT SUM(CAST(answer as decimal)) INTO count_value FROM ans
+    WHERE date_part('year', created_at) = in_year
+      AND date_part('month', created_at) = in_month
+     AND ans.form_id =3
+        AND ans.question_id = 72;
+    RETURN count_value;
+END;
+$$;
+
+alter function public.get_km_for_year_month(integer, integer) owner to postgres;
+
+grant execute on function public.get_km_for_year_month(integer, integer) to anon;
+
+grant execute on function public.get_km_for_year_month(integer, integer) to authenticated;
+
+grant execute on function public.get_km_for_year_month(integer, integer) to service_role;
+

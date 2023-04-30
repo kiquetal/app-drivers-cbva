@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import FormSelectionScreen from "./FormSelectionScreen";
 import FormOperatorStack from "./FormOperatorStack";
 import FormMovimientoMovilScreen from "./FormMovimientoMovilScreen";
+import StatisticScreen from "./StatisticScreen";
 
 
 export default MenuForm = (props) => {

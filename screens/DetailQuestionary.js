@@ -13,7 +13,7 @@ export default DetailQuestionaryScreen = (props) =>  {
     const { navigation } = props;
     const { id } = props.route.params;
     console.log(id)
-
+    const [formId, setFormId] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [questionaries, setQuestionaries] = useState([])
     const [dateQuestionary, setDateQuestionary] = useState("")
@@ -48,6 +48,7 @@ export default DetailQuestionaryScreen = (props) =>  {
                 console.log("Error en detail",error);
             }
             console.log("load_date_questionary",JSON.stringify(data))
+            setFormId(data[0].form_id)
             setDateQuestionary(data[0].created_at)
             setMovileSelected(data[0].movil)
 
@@ -96,22 +97,26 @@ export default DetailQuestionaryScreen = (props) =>  {
 
     const exportToCsv = async () => {
 
-        //write a csv using rn-fetch-blob
-        try {
-            const date = new Date().toISOString();
-            console.log("here",date.substring(0,17))
-            const path = `${FileSystem.documentDirectory}${date.substring(0,16).replace(":","_")}-questionary-${props.route.params.id}.csv`;
-            const headers = 'Sección,Pregunta,Respuesta,Notas,Movil\n';
-            const data = questionaries.map(row => `${row.sections.name_section},${">>"+row.questions.question + "<<"},${row.answer},${row.notes > ""?row.notes:"--"},${row.questionaries.movil}`).join('\n');
-            const file = await FileSystem.writeAsStringAsync(path, headers + data, { encoding: FileSystem.EncodingType.UTF8 })
-            await Sharing.shareAsync(path, {
-                mimeType: 'text/csv',
-                dialogTitle: 'Export to CSV',
-                UTI: `${date.substring(0,16).replace(":","_")}-cuestionario-${props.route.params.id}.csv`,
-            });
+        if (formId === 1) {
+            //write a csv using rn-fetch-blob
+            try {
+                const date = new Date().toISOString();
+                console.log("here", date.substring(0, 17))
+                const path = `${FileSystem.documentDirectory}${date.substring(0, 16).replace(":", "_")}-questionary-${props.route.params.id}.csv`;
+                const headers = 'Sección,Pregunta,Respuesta,Notas,Movil\n';
+                const data = questionaries.map(row => `${row.sections.name_section},${">>" + row.questions.question + "<<"},${row.answer},${row.notes > "" ? row.notes : "--"},${row.questionaries.movil}`).join('\n');
+                const file = await FileSystem.writeAsStringAsync(path, headers + data, {encoding: FileSystem.EncodingType.UTF8})
+                await Sharing.shareAsync(path, {
+                    mimeType: 'text/csv',
+                    dialogTitle: 'Export to CSV',
+                    UTI: `${date.substring(0, 16).replace(":", "_")}-cuestionario-${props.route.params.id}.csv`,
+                });
+            } catch (e) {
+                console.log(e);
+            }
         }
-        catch (e) {
-            console.log(e);
+        else if (formId === 3) {
+                console.log("formId", formId)
         }
     };
     return (
@@ -121,7 +126,8 @@ export default DetailQuestionaryScreen = (props) =>  {
             </Dialog>
             <View>
                 <Text style={{ textAlign: 'center', color:'black', fontSize: 20, fontWeight: 'bold', margin: 10 }}>{`${dateQuestionary.substring(0,dateQuestionary.search("T"))}`}</Text>
-                <Text style={{ textAlign: 'center', color:'black', fontSize: 20, fontWeight: 'bold', margin: 10 }}>{`Movil ${movileSelection} `}</Text>
+
+                { formId ===1 &&  <Text style={{ textAlign: 'center', color:'black', fontSize: 20, fontWeight: 'bold', margin: 10 }}>{`Movil ${movileSelection} `}</Text> }
 
             </View>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#4347c2' }} style={{ margin: 10 }}>
@@ -145,12 +151,14 @@ export default DetailQuestionaryScreen = (props) =>  {
             </Table>
             <View style={{ flexDirection: 'row', flexWrap:'wrap', justifyContent: 'center', margin: 10 }}>
                 <Button buttonStyle={{marginLeft:2}} onPress={() => navigation.navigate('Questionaries')}>Regresar</Button>
-                <Button  buttonStyle={{marginLeft:5}} onPress={exportToCsv}>Exportar csv</Button>
-                <Button buttonStyle={{marginLeft:5}} onPress={() => setVisibleForDelete(true) }>Borrar </Button>
+                 <Button buttonStyle={{marginLeft:5}} onPress={() => setVisibleForDelete(true) }>Borrar </Button>
+
+                { formId === 1 &&   <Button  buttonStyle={{marginLeft:5}} onPress={exportToCsv}>Exportar csv</Button> }
+                { formId ===1  &&
                 <Button buttonStyle={{marginLeft:5, marginTop:10}} onPress={() => navigation.navigate('MenuForm',{
                     screen: 'FormQuestionsOpeartors'
                 })}>Agregar nuevo cuestionario</Button>
-
+                }
                 <Overlay isVisible={visibleForDelete} overlayStyle={{justifyContent:'center',alignContent:'center'} } onBackdropPress={toggleOverlayForDelete} >
                     <Text>¿Estas seguro de borrar el cuestionario?</Text>
                     <Button icon={<Icon name="check" size={15} color="green"/>} buttonStyle={{width:100, alignSelf:'center'}} onPress={async ()=>  {  await deleteQuestionary(); toggleOverlayForDelete()}}>Confirmar</Button>

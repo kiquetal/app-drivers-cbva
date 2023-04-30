@@ -60,7 +60,14 @@ const Home = (props) => {
                     }
                     style={[styles.button]}
                 />
-
+                <Button
+                    title='Estadisticas'
+                    onPress={() => navigation.navigate('Statistics')}
+                    icon={
+                        <Icon name="bar-chart" color="#FFFFFF" size={18} style={styles.icon} />
+                    }
+                    style={[styles.button]}
+                />
                 <Button
                     title={'Salir'}
                     onPress={() => authContext.signOut()}
