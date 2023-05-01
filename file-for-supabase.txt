@@ -42,3 +42,13 @@ grant execute on function public.get_km_for_year_month(integer, integer) to auth
 
 grant execute on function public.get_km_for_year_month(integer, integer) to service_role;
 
+
+CREATE OR REPLACE FUNCTION obtain_quantity_by_service(f_id integer, q_id integer)
+    RETURNS TABLE(cantidad bigint, servicio varchar) AS $$
+BEGIN
+    RETURN QUERY SELECT count(*), ans.answer  FROM ans
+    WHERE ans.form_id = f_id
+    AND ans.question_id = q_id
+    GROUP BY ans.answer;
+END;
+$$ LANGUAGE plpgsql;
