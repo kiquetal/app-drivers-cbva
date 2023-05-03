@@ -52,3 +52,110 @@ BEGIN
     GROUP BY ans.answer;
 END;
 $$ LANGUAGE plpgsql;
+
+select count(ans.answer), ans.answer from ans
+where ans.question_id = 75
+
+
+group by ans.answer
+
+
+select sum(cast(ans.answer as decimal)) INTO variable_1 from ans
+where ans.form_id =3
+and ans.question_id = 72
+
+
+CREATE OR REPLACE FUNCTION get_km_for_year_month(
+    in_year integer,
+    in_month integer)
+    RETURNS numeric AS $$
+DECLARE
+    count_value numeric;
+BEGIN
+    SELECT SUM(CAST(answer as numeric)) INTO count_value FROM ans
+    WHERE date_part('year', created_at) = in_year
+    AND date_part('month', created_at) = in_month
+     AND ans.form_id =3
+    AND ans.question_id = 72;
+    RETURN count_value;
+END;
+$$ LANGUAGE plpgsql;
+
+select get_km_for_year_month(2023, 04);
+
+select count(*) as cantidad, ans.answer as servicio from ans
+where ans.form_id =3
+and ans.question_id = 75
+group by ans.answer;
+
+
+
+CREATE OR REPLACE FUNCTION obtain_quantity_by_service(f_id integer, q_id integer, in_year integer, in_month integer)
+    RETURNS TABLE(cantidad bigint, servicio varchar) AS $$
+BEGIN
+    RETURN QUERY SELECT count(*), ans.answer  FROM ans
+    WHERE ans.form_id = f_id
+    AND ans.question_id = q_id
+    AND date_part('year', created_at) = in_year
+      AND date_part('month', created_at) = in_month
+    GROUP BY ans.answer;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP FUNCTION obtain_quantity_by_service(integer, integer);
+
+
+select * from obtain_quantity_by_service(3, 75, 2023, 04)
+
+select sum(cantidad) from obtain_quantity_by_service(3, 75);
+
+
+select count(*), answer from ans
+where ans.form_id=3
+and ans.question_id= 75
+  AND date_part('year', created_at) = '2023'
+  AND date_part('month', created_at) = '05'
+
+group by answer
+
+
+select * from get_km_for_year_month(2022)
+
+
+SELECT SUM(CAST(answer as numeric))  FROM ans
+WHERE date_part('year', created_at) = '2023'
+  AND ans.form_id =3
+  AND ans.question_id = 72;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION my_numeric_function()
+    RETURNS numeric AS $$
+DECLARE
+    my_number numeric;
+BEGIN
+    my_number := 123.45;
+    RETURN my_number;
+END;
+$$ LANGUAGE plpgsql;
+
+
+select answer , count(answer) from ans
+where ans.form_id =3
+and question_id IN ( 79)
+group by answer;
+
+select * from questions
+where id IN ( 79);
+
+select count(*), answer
+from ans
+where ans.form_id =3
+and question_id = 75
+group by answer;
+
+select * from questions
+where form_id = 3;
+
