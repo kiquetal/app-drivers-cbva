@@ -159,3 +159,18 @@ group by answer;
 select * from questions
 where form_id = 3;
 
+
+create function obtain_detail_by_type_service(service_type integer, in_year integer, in_month integer)
+    returns TABLE(servicio character varying)
+    language plpgsql
+as
+$$
+BEGIN
+    RETURN QUERY SELECT ans.answer  FROM ans
+                 WHERE ans.form_id = 3
+                   AND ans.question_id = service_type
+                   AND date_part('year', created_at) = in_year
+                   AND date_part('month', created_at) = in_month;
+
+END;
+$$;
