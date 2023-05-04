@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import {Dropdown} from "react-native-element-dropdown";
 import {Button, Card, Dialog, Overlay} from "@rneui/themed";
 import {supabase} from "../lib/supabase";
@@ -137,6 +137,28 @@ export default StatisticsScreen = (props) => {
         }
 
     }
+    const types_services = [
+        {
+            label:"10.40",
+            value:"10.40"
+        },
+        {
+            label: "10.41",
+            value:"10.41"
+        },
+        {
+            label: "10.43",
+            value:"10.43"
+        },
+        {
+            label: "10.51"
+            ,value:"10.51"
+        },
+        {
+            label: "10.34",
+            value:"10.34"
+        }
+        ]
 
     return (
         <View style={{ flex: 1 }}>
@@ -191,6 +213,7 @@ export default StatisticsScreen = (props) => {
 
             {             <Dialog isVisible={isLoading}><Dialog.Loading /></Dialog>}
             { datTable && datTable.length >0 &&
+                <ScrollView>
             <View>
                 <Card containerStyle={{backgroundColor:'white'}}>
                 { datTable &&
@@ -201,12 +224,34 @@ export default StatisticsScreen = (props) => {
                     </Table>}
 
                 <Text style={styles.horizontalText}>Total de kilometros: {km} </Text>
-            </Card>
+                    </Card>
+                <Card
+                    containerStyle={{backgroundColor:'white'}}>
+                    <Card.Title style={{color:'black'}}>Detalle del Tipo de Servicio</Card.Title>
+                    <Text >Seleccion el servicio</Text>
+            <Controller  name="type_service"
+                            control={control}
+                         render={({field: {onChange, onBlur, value}}) => (
+                    <Dropdown data={types_services} labelField="label" valueField="value" onChange={item => {
+                        console.log(item);
+                        onChange(item.value);
 
-                <Card containerStyle={{backgroundColor:'white'}}>
-            <Text style={styles.horizontalText}>Seleccion tipo de servicio </Text>
+                    }
+                    }
+                    value={value}
+                    />
+                )}
+                defaultValue={types_services[0].value}
+                />
+                    <Button style={{marginTop:10, height:50}}
+                            title={"Generar"}
+                            onPress={()=>console.log("generar")}
+
+                    />
+                    <Card.Divider/>
                 </Card>
            </View>
+                </ScrollView>
             }
         </View>
     );
