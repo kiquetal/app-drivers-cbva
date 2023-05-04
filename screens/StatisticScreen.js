@@ -191,7 +191,8 @@ export default StatisticsScreen = (props) => {
 
             {             <Dialog isVisible={isLoading}><Dialog.Loading /></Dialog>}
             { datTable && datTable.length >0 &&
-            <Card containerStyle={{backgroundColor:'white'}}>
+            <View>
+                <Card containerStyle={{backgroundColor:'white'}}>
                 { datTable &&
                     <Table>
                         <Row data={["Cantidad","Servicio"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
@@ -201,6 +202,11 @@ export default StatisticsScreen = (props) => {
 
                 <Text style={styles.horizontalText}>Total de kilometros: {km} </Text>
             </Card>
+
+                <Card containerStyle={{backgroundColor:'white'}}>
+            <Text style={styles.horizontalText}>Seleccion tipo de servicio </Text>
+                </Card>
+           </View>
             }
         </View>
     );
