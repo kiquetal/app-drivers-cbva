@@ -160,6 +160,20 @@ export default StatisticsScreen = (props) => {
         }
         ]
 
+    const obtenerDetalles = async () => {
+            try {
+
+                const { data, error} = await supabase.rpc('obtain_quantity_by_service',{
+
+
+            }
+            catch (e) {
+                console.log("error, no se pudo obtener detalles")
+                console.log(e);
+            }
+
+
+    }
     return (
         <View style={{ flex: 1 }}>
             <Card containerStyle={{backgroundColor:'white'}}>
@@ -244,8 +258,8 @@ export default StatisticsScreen = (props) => {
                 defaultValue={types_services[0].value}
                 />
                     <Button style={{marginTop:10, height:50}}
-                            title={"Generar"}
-                            onPress={()=>console.log("generar")}
+                            title={"Obtener detalles"}
+                            onPress={obtenerDetalles}
 
                     />
                     <Card.Divider/>
