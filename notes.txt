@@ -1,6 +1,8 @@
 - History of questionaries
 - Selección del tipo de questionario.
-- Agregar tipo de respuestas - { si, no, na, notes} 
+- Agregar tipo de respuestas - { si, no, na, notes}
                                { inputText}
--using react-native-elements for 
-                                 
+-using react-native-elements for
+
+
+- se debe implementarungenerador de csv para distintas consultas
