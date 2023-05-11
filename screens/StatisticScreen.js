@@ -263,6 +263,9 @@ export default StatisticsScreen = (props) => {
 
                     />
                     <Card.Divider/>
+                    {
+                          //details && details.length > 0 &&
+                    }
                 </Card>
            </View>
                 </ScrollView>
