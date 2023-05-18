@@ -422,3 +422,5 @@ group by ans2.questionary_id, ans2.created_at;
 select * from obtain_detail_by_type_service(76, 2023, 05);
 
 select * from obtain_quantity_by_movil(2023, 05);
+
+select *from obtain_resumen_by_movil(2023, 05, 'AR-F7');

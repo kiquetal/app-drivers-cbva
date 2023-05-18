@@ -29,6 +29,12 @@ export default StatisticsScreen = (props) => {
     const [detailServices,setDetailServices]=useState([])
 
     const [dataTableMovil,setDataTableMovil]=useState([])
+
+    const [movilesInRange,setMovilesInRage]=useState([])
+
+    const [movil,setMovil]=useState("")
+
+    const [ resumenMoviles,setResumenMoviles] = useState([])
     const form_ids = [{
         label:"Movimiento de movil",
         value:3
@@ -136,8 +142,23 @@ export default StatisticsScreen = (props) => {
                in_year:year,
                 in_month:month,
             })
+
+
             console.log("datamovil",datamovil)
-            setDataTableMovil(datamovil)
+            let movilesList = []
+            if (datamovil) {
+                console.log("datos ok in data movil")
+                console.log("datamovil",datamovil)
+
+                movilesList = await datamovil.map((item, index) => {
+                    return {"label": item["movil"], "value": item["movil"]}
+                });
+                console.log("movilesList",movilesList)
+                console.log("movilesList position0",movilesList[0].value)
+                setMovilesInRage(movilesList)
+                setDataTableMovil(datamovil)
+                setMovil(movilesList[0].value)
+            }
 
 
             if (error) console.error(errorkm)
@@ -148,11 +169,10 @@ export default StatisticsScreen = (props) => {
                 else
                 setKm(0)
             }
-
             setIsLoading(false)
         }
         catch (e) {
-            console.log("error")
+            console.log("error en generateTable")
             console.log(e);
             setIsLoading(false)
         }
@@ -217,6 +237,30 @@ export default StatisticsScreen = (props) => {
             }
 
 
+    }
+    const obtenerDetallesMovil = async () => {
+        try {
+
+            console.log("movil",movil)
+            console.log("year",year)
+            console.log("month",month)
+
+            const { data, error} = await supabase.rpc('obtain_resumen_by_movil',{
+                in_movil:movil,
+                in_year:year,
+                in_month:month
+            }   );
+            console.log("data",data)
+
+            if (data.length>0)
+                setResumenMoviles(data);
+
+
+        }
+        catch (e) {
+            console.log("error, no se pudo obtener detalles,detalle por movil")
+            console.log(e);
+        }
     }
     return (
         <View style={{ flex: 1 }}>
@@ -329,6 +373,43 @@ export default StatisticsScreen = (props) => {
                     </Table>}
 
                 </Card>
+                { movilesInRange.length>0 &&
+                <Card
+                    containerStyle={{backgroundColor:'white'}}>
+                    <Card.Title style={{color:'black'}}>Detalle por  Moviles</Card.Title>
+                    <Text >Seleccione el movil</Text>
+                    <Controller  name="movil"
+                                    control={control}
+                                    render={({field: {onChange, onBlur, value}}) => (
+                                        <Dropdown data={movilesInRange} labelField="label" valueField="value" onChange={item => {
+                                            console.log(item);
+                                            onChange(item.value);
+                                            setMovil(item.value);
+
+                                        }
+                                        }
+                                                    value={value}
+                                        />
+                                    )}
+                                    defaultValue={movilesInRange[0].value}
+                    />
+                    <Button style={{marginTop:10, height:50}}
+                            title={"Obtener detalles"}
+                            onPress={obtenerDetallesMovil}
+
+                    />
+                    <Card.Divider/>
+                    { resumenMoviles.length>0 &&
+                    <Table>
+                        <Row data={["Detalle"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
+                        <Rows data={resumenMoviles.map((record) => [record.detalle])}
+                                style={styles.TableText}></Rows>
+                    </Table>}
+
+
+                </Card>
+
+                    }
            </View>
                 </ScrollView>
             }
