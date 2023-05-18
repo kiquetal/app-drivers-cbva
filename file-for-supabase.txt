@@ -174,3 +174,251 @@ BEGIN
 
 END;
 $$;
+
+
+
+
+select count(ans.answer), ans.answer from ans
+where ans.question_id = 75
+
+
+group by ans.answer
+
+
+select sum(cast(ans.answer as decimal)) INTO variable_1 from ans
+where ans.form_id =3
+and ans.question_id = 72
+
+
+CREATE OR REPLACE FUNCTION get_km_for_year_month(
+    in_year integer,
+    in_month integer)
+    RETURNS numeric AS $$
+DECLARE
+    count_value numeric;
+BEGIN
+    SELECT SUM(CAST(answer as numeric)) INTO count_value FROM ans
+    WHERE date_part('year', created_at) = in_year
+    AND date_part('month', created_at) = in_month
+     AND ans.form_id =3
+    AND ans.question_id = 72;
+    RETURN count_value;
+END;
+$$ LANGUAGE plpgsql;
+
+select get_km_for_year_month(2023, 04);
+
+select count(*) as cantidad, ans.answer as servicio from ans
+where ans.form_id =3
+and ans.question_id = 75
+group by ans.answer;
+
+
+
+CREATE OR REPLACE FUNCTION obtain_quantity_by_service(f_id integer, q_id integer, in_year integer, in_month integer)
+    RETURNS TABLE(cantidad bigint, servicio varchar) AS $$
+BEGIN
+    RETURN QUERY SELECT count(*), ans.answer  FROM ans
+    WHERE ans.form_id = f_id
+    AND ans.question_id = q_id
+    AND date_part('year', created_at) = in_year
+      AND date_part('month', created_at) = in_month
+    GROUP BY ans.answer;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP FUNCTION obtain_quantity_by_service(integer, integer);
+
+
+select * from obtain_quantity_by_service(3, 75, 2023, 05)
+
+select sum(cantidad) from obtain_quantity_by_service(3, 75);
+
+
+select count(*), answer from ans
+where ans.form_id=3
+and ans.question_id= 75
+  AND date_part('year', created_at) = '2023'
+  AND date_part('month', created_at) = '05'
+
+group by answer
+
+
+select * from get_km_for_year_month(2022)
+
+
+SELECT SUM(CAST(answer as numeric))  FROM ans
+WHERE date_part('year', created_at) = '2023'
+  AND ans.form_id =3
+  AND ans.question_id = 72;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION my_numeric_function()
+    RETURNS numeric AS $$
+DECLARE
+    my_number numeric;
+BEGIN
+    my_number := 123.45;
+    RETURN my_number;
+END;
+$$ LANGUAGE plpgsql;
+
+
+select answer , count(answer) from ans
+where ans.form_id =3
+and question_id IN ( 79)
+group by answer;
+
+select * from questions
+where id IN ( 79);
+
+select count(*), answer
+from ans
+where ans.form_id =3
+and question_id = 75
+group by answer;
+
+select * from questions
+where form_id = 3;
+
+select * from ans
+where form_id =3
+and question_id = 76
+and date_part('year', created_at) = '2023'
+and date_part('month', created_at) = '05';
+
+
+CREATE OR REPLACE FUNCTION obtain_detail_by_type_service(service_type integer, in_year integer, in_month integer)
+    RETURNS TABLE(servicio varchar, movil varchar, fecha text) AS $$
+BEGIN
+    RETURN QUERY SELECT ans.answer, ans2.answer, to_char(ans.created_at,'YYYY-MM-DD') FROM ans
+                                                 inner join ans ans2
+                 on ans.questionary_id = ans2.questionary_id
+                 WHERE ans.form_id = 3
+                   AND ans.question_id = service_type
+                   AND ans2.question_id = 71
+                   AND date_part('year', ans.created_at) = in_year
+                   AND date_part('month', ans.created_at) = in_month;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION obtain_quantity_by_movil(in_year integer, in_month integer)
+    RETURNS TABLE(movil varchar, cantidad bigint) AS $$
+BEGIN
+    RETURN QUERY select distinct(answer),count(answer) from ans
+                 where form_id =3
+                   and question_id = 71
+                   and date_part('year', created_at) = in_year
+                   and date_part('month', created_at) = in_month
+                 group by answer;
+END;
+$$ LANGUAGE plpgsql;
+
+
+drop function obtain_quantity_by_movil;
+drop function  obtain_detail_by_type_service;
+
+select * from obtain_detail_by_type_service(76, 2023, 05);
+
+SELECT * FROM ans
+WHERE ans.form_id = 3
+AND ans.question_id = 75
+  AND date_part('year', created_at) = '2023'
+  AND date_part('month', created_at) = '05'
+and user_id= 'f8d696e6-1541-4700-b36c-8da0103af414'
+
+
+SELECT ans.answer, a.questionary_id , a.answer FROM ans
+                                   inner join ans a
+                                   on ans.questionary_id = a.questionary_id
+
+WHERE ans.form_id = 3
+  AND ans.question_id = 76
+  AND a.question_id = 74
+  AND date_part('year', a.created_at) = '2023'
+  AND date_part('month', a.created_at) = '05'
+and a.user_id= 'f8d696e6-1541-4700-b36c-8da0103af414';
+
+select * from isadmin();
+
+
+select a.answer , ans_2.answer
+from ans as a
+inner join ans as ans_2
+on a.questionary_id = ans_2.questionary_id
+where a.form_id =3
+and a.questionary_id = 93
+  and a.question_id = 75
+and ans_2.question_id = 72
+
+
+select to_char(created_at,'YYYY-MM-DD') from ans
+where id =723
+
+
+
+select distinct(answer),count(answer) from ans
+where form_id =3
+and question_id = 71
+and date_part('year', created_at) = '2023'
+and date_part('month', created_at) = '05'
+group by answer;
+
+select ans.answer, ans2.answer from ans
+join ans ans2 on ans.questionary_id = ans2.questionary_id
+                               where ans.form_id =3
+and
+ans2.question_id = 71
+and ans.question_id = 75
+
+select ans.questionary_id, ans.answer,ans2.answer  from ans
+                                                                   join  ans ans2
+                                                                     on ans.questionary_id = ans2.questionary_id
+
+where ans.form_id =3
+and ans.question_id = 71
+and ans.answer = 'AR-F7'
+and ans2.question_id = 75;
+
+
+select count(answer), answer from ans
+where form_id =3
+and question_id = 71
+group by answer;
+
+
+CREATE OR REPLACE FUNCTION obtain_resumen_by_movil(in_year integer, in_month integer, in_movil varchar)
+    RETURNS TABLE(detalle varchar, fecha varchar) AS $$
+BEGIN
+    RETURN QUERY select array_to_string(array_agg(ans2.answer), ',') as detalle, to_char(ans2.created_at,'YYYY-MM-DD hh:mm') as fecha from ans
+join ans ans2 on ans.questionary_id = ans2.questionary_id
+where ans.form_id =3
+and ans.question_id = 71
+and ans.answer = in_movil
+and ans2.question_id  in (74,75, 76, 77, 78, 79, 80, 81, 82, 73, 84, 85)
+and date_part('year', ans.created_at) = in_year
+and date_part('month', ans.created_at) = in_month
+group by ans2.questionary_id, ans2.created_at;
+
+END;
+$$ LANGUAGE plpgsql;
+
+select array_to_string(array_agg(ans2.answer), ',') as detalle, to_char(ans2.created_at,'YYYY-MM-DD hh:mm') as fecha from ans
+join ans ans2 on ans.questionary_id = ans2.questionary_id
+where ans.form_id =3
+and ans.question_id = 71
+and ans.answer = 'AR-F7'
+and ans2.question_id  in (74,75, 76, 77, 78, 79, 80, 81, 82, 73, 84, 85)
+and date_part('year', ans.created_at) = '2023'
+and date_part('month', ans.created_at) = '05'
+group by ans2.questionary_id, ans2.created_at;
+
+
+select * from obtain_detail_by_type_service(76, 2023, 05);
+
+select * from obtain_quantity_by_movil(2023, 05);

@@ -21,6 +21,14 @@ export default StatisticsScreen = (props) => {
     const [datTable, setDataTable] = useState([]);
 
     const [isLoading, setIsLoading] = useState(false);
+
+    const [tipoServicio, setTipoServicio] = useState("")
+
+    const [tipeServicesInRange, setTipeServicesInRange] = useState([])
+
+    const [detailServices,setDetailServices]=useState([])
+
+    const [dataTableMovil,setDataTableMovil]=useState([])
     const form_ids = [{
         label:"Movimiento de movil",
         value:3
@@ -109,15 +117,28 @@ export default StatisticsScreen = (props) => {
             })
             console.log("data",data)
 
-            if (!error)
+            const tipoServices = data.map((item, index) => {
+                return {"label": item["servicio"],"value":item["servicio"]}
+            });
+            setTipoServicio(tipoServices[0].value)
+            setTipeServicesInRange(tipoServices)
+
+            if (!error) {
                 setDataTable(data)
-
-
+            }
             let { data: datakm, error:errorkm } = await supabase
                 .rpc('get_km_for_year_month', {
                     in_month:month,
                     in_year:year,
                 })
+
+            let { data: datamovil, error:errormovil } = await supabase.rpc('obtain_quantity_by_movil', {
+               in_year:year,
+                in_month:month,
+            })
+            console.log("datamovil",datamovil)
+            setDataTableMovil(datamovil)
+
 
             if (error) console.error(errorkm)
             else {
@@ -163,8 +184,31 @@ export default StatisticsScreen = (props) => {
     const obtenerDetalles = async () => {
             try {
 
-                const { data, error} = await supabase.rpc('obtain_quantity_by_service',{
+             //   const { data, error} = await supabase.rpc('obtain_quantity_by_service',{
+                console.log(tipeServicesInRange)
+                console.log("identificar por el tipo de servicio");
+                console.log("tipoServicio",tipoServicio);
 
+                const mappingService = {
+                    "10.40": 76,
+                    "10.41": 78,
+                    "10.43": 79,
+                    "10.51": 80,
+                    "10.34": 81
+                }
+
+                const typeService=mappingService[tipoServicio]
+                console.log("typeService",typeService)
+                console.log("year",year)
+                console.log("month",month)
+                const { data, error} = await supabase.rpc('obtain_detail_by_type_service',{
+                    service_type:typeService,
+                    in_year:year,
+                    in_month:month
+                })
+
+                console.log("data",data)
+                setDetailServices(data)
 
             }
             catch (e) {
@@ -230,6 +274,7 @@ export default StatisticsScreen = (props) => {
                 <ScrollView>
             <View>
                 <Card containerStyle={{backgroundColor:'white'}}>
+                    <Card.Title style={{color:'black'}}>Resumen de  Servicios</Card.Title>
                 { datTable &&
                     <Table>
                         <Row data={["Cantidad","Servicio"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
@@ -239,23 +284,36 @@ export default StatisticsScreen = (props) => {
 
                 <Text style={styles.horizontalText}>Total de kilometros: {km} </Text>
                     </Card>
+
+                <Card containerStyle={{backgroundColor:'white'}}>
+                    <Card.Title style={{color:'black'}}>Resumen por  Moviles</Card.Title>
+                    { dataTableMovil.length>0 &&
+                    <Table>
+                        <Row data={["Cantidad","Movil"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
+                        <Rows data={dataTableMovil.map((record) => [record.cantidad, record.movil])}
+                                style={styles.TableText}></Rows>
+                    </Table>}
+                </Card>
+
+
                 <Card
                     containerStyle={{backgroundColor:'white'}}>
                     <Card.Title style={{color:'black'}}>Detalle del Tipo de Servicio</Card.Title>
-                    <Text >Seleccion el servicio</Text>
+                    <Text >Seleccione el servicio</Text>
             <Controller  name="type_service"
                             control={control}
                          render={({field: {onChange, onBlur, value}}) => (
-                    <Dropdown data={types_services} labelField="label" valueField="value" onChange={item => {
+                    <Dropdown data={tipeServicesInRange} labelField="label" valueField="value" onChange={item => {
                         console.log(item);
                         onChange(item.value);
+                        setTipoServicio(item.value);
 
                     }
                     }
                     value={value}
                     />
                 )}
-                defaultValue={types_services[0].value}
+                defaultValue={tipeServicesInRange[0].value}
                 />
                     <Button style={{marginTop:10, height:50}}
                             title={"Obtener detalles"}
@@ -263,9 +321,13 @@ export default StatisticsScreen = (props) => {
 
                     />
                     <Card.Divider/>
-                    {
-                          //details && details.length > 0 &&
-                    }
+                    { detailServices.length>0 &&
+                    <Table>
+                        <Row data={["Servicio","Movil","Fecha"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
+                        <Rows data={detailServices.map((record) => [record.servicio, record.movil, record.fecha])}
+                                style={styles.TableText}></Rows>
+                    </Table>}
+
                 </Card>
            </View>
                 </ScrollView>
@@ -333,7 +395,9 @@ const styles = StyleSheet.create({
 
     },
     TableText: {
-        margin: 10
+        margin: 10,
+        alignContent: "center",
+        flexWrap: 'wrap',
     }
 
 });
