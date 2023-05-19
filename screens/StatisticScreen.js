@@ -34,6 +34,8 @@ export default StatisticsScreen = (props) => {
 
     const [movil,setMovil]=useState("")
 
+    const [isAdmin, setIsAdmin] = useState(false)
+
     const [ resumenMoviles,setResumenMoviles] = useState([])
     const form_ids = [{
         label:"Movimiento de movil",
@@ -99,11 +101,29 @@ export default StatisticsScreen = (props) => {
         const year = new Date().getFullYear()
         setMonth(month)
         setYear(year)
+        const checkAdmin = async () => {
+            try {
+                const userId= (await supabase.auth.getUser()).data.user.id
+                console.log("userId",userId)
+                const { data, error } = await supabase.from('admins')
+                    .select('*')
+                    .eq('user_id', userId)
 
 
+                if (data && data.length> 0) {
+                    console.log("data",data)
+                    setIsAdmin(true)
+
+                }
+            }
+            catch (e) {
+                console.log("error en checkAdmin")
+                console.log(e);
+            }
         }
 
-    ,[])
+
+        checkAdmin().catch(console.log)},[])
 
     const generateTable = async () => {
 
@@ -263,158 +283,175 @@ export default StatisticsScreen = (props) => {
         }
     }
     return (
-        <View style={{ flex: 1 }}>
-            <Card containerStyle={{backgroundColor:'white'}}>
-            <Text>Formulario</Text>
-                <Controller
-                render={({field: {onChange, onBlur, value}}) => (
+            <React.Fragment>
+                {isAdmin && <View style={{flex: 1}}>
+                <Card containerStyle={{backgroundColor: 'white'}}>
+                    <Text>Formulario</Text>
+                    <Controller
+                        render={({field: {onChange, onBlur, value}}) => (
 
-                    <Dropdown data={form_ids}
-                              labelField="label"
-                              valueField="value"
-                              placeholder={"Seleccione un formulario"}
+                            <Dropdown data={form_ids}
+                                      labelField="label"
+                                      valueField="value"
+                                      placeholder={"Seleccione un formulario"}
+                                      onChange={item => {
+                                          console.log(item);
+                                          setFormId(item.value);
+                                      }}
+                                      value={form_id}
+
+
+                            />
+                        )}
+                        name="form_id"
+                        control={control}
+                        defaultValue={3}
+                    />
+
+                    <Text>Año</Text>
+                    <Dropdown data={years} labelField="label" valueField="value"
                               onChange={item => {
                                   console.log(item);
-                                  setFormId(item.value);
+                                  setYear(item.value);
+
                               }}
-                              value={form_id}
-
-
+                              value={year}
                     />
-                )}
-                name="form_id"
-                control={control}
-                defaultValue={3}
-                />
-
-            <Text>Año</Text>
-            <Dropdown data={years} labelField="label" valueField="value"
-                      onChange={item => {
-                          console.log(item);
-                          setYear(item.value);
-
-                      }}
-            value={year}
-            />
-            <Text>Mes</Text>
-            <Dropdown data={months} labelField="label" valueField="value"
-                        onChange={item => {
-                            console.log(item);
-                            setMonth(item.value);
-                        }
-                        }
-            value={month}
-            />
-                <Button style={{marginTop:10, height:50}}
-                         title={"Generar"}
-                        onPress={generateTable}
-                />
-
-
-            </Card>
-
-            {             <Dialog isVisible={isLoading}><Dialog.Loading /></Dialog>}
-            { datTable && datTable.length >0 &&
-                <ScrollView>
-            <View>
-                <Card containerStyle={{backgroundColor:'white'}}>
-                    <Card.Title style={{color:'black'}}>Resumen de  Servicios</Card.Title>
-                { datTable &&
-                    <Table>
-                        <Row data={["Cantidad","Servicio"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
-                        <Rows data={datTable.map((record) => [record.cantidad, record.servicio])}
-                              style={styles.TableText}></Rows>
-                    </Table>}
-
-                <Text style={styles.horizontalText}>Total de kilometros: {km} </Text>
-                    </Card>
-
-                <Card containerStyle={{backgroundColor:'white'}}>
-                    <Card.Title style={{color:'black'}}>Resumen por  Moviles</Card.Title>
-                    { dataTableMovil.length>0 &&
-                    <Table>
-                        <Row data={["Cantidad","Movil"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
-                        <Rows data={dataTableMovil.map((record) => [record.cantidad, record.movil])}
-                                style={styles.TableText}></Rows>
-                    </Table>}
-                </Card>
-
-
-                <Card
-                    containerStyle={{backgroundColor:'white'}}>
-                    <Card.Title style={{color:'black'}}>Detalle del Tipo de Servicio</Card.Title>
-                    <Text >Seleccione el servicio</Text>
-            <Controller  name="type_service"
-                            control={control}
-                         render={({field: {onChange, onBlur, value}}) => (
-                    <Dropdown data={tipeServicesInRange} labelField="label" valueField="value" onChange={item => {
-                        console.log(item);
-                        onChange(item.value);
-                        setTipoServicio(item.value);
-
-                    }
-                    }
-                    value={value}
+                    <Text>Mes</Text>
+                    <Dropdown data={months} labelField="label" valueField="value"
+                              onChange={item => {
+                                  console.log(item);
+                                  setMonth(item.value);
+                              }
+                              }
+                              value={month}
                     />
-                )}
-                defaultValue={tipeServicesInRange[0].value}
-                />
-                    <Button style={{marginTop:10, height:50}}
-                            title={"Obtener detalles"}
-                            onPress={obtenerDetalles}
-
+                    <Button style={{marginTop: 10, height: 50}}
+                            title={"Generar"}
+                            onPress={generateTable}
                     />
-                    <Card.Divider/>
-                    { detailServices.length>0 &&
-                    <Table>
-                        <Row data={["Servicio","Movil","Fecha"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
-                        <Rows data={detailServices.map((record) => [record.servicio, record.movil, record.fecha])}
-                                style={styles.TableText}></Rows>
-                    </Table>}
-
-                </Card>
-                { movilesInRange.length>0 &&
-                <Card
-                    containerStyle={{backgroundColor:'white'}}>
-                    <Card.Title style={{color:'black'}}>Detalle por  Moviles</Card.Title>
-                    <Text >Seleccione el movil</Text>
-                    <Controller  name="movil"
-                                    control={control}
-                                    render={({field: {onChange, onBlur, value}}) => (
-                                        <Dropdown data={movilesInRange} labelField="label" valueField="value" onChange={item => {
-                                            console.log(item);
-                                            onChange(item.value);
-                                            setMovil(item.value);
-
-                                        }
-                                        }
-                                                    value={value}
-                                        />
-                                    )}
-                                    defaultValue={movilesInRange[0].value}
-                    />
-                    <Button style={{marginTop:10, height:50}}
-                            title={"Obtener detalles"}
-                            onPress={obtenerDetallesMovil}
-
-                    />
-                    <Card.Divider/>
-                    { resumenMoviles.length>0 &&
-                    <Table>
-                        <Row data={["Detalle"]} style={styles.HeadStyle} textStyle={{color:'#fff'}} ></Row>
-                        <Rows data={resumenMoviles.map((record) => [record.detalle])}
-                                style={styles.TableText}></Rows>
-                    </Table>}
 
 
                 </Card>
+                {<Dialog isVisible={isLoading}><Dialog.Loading/></Dialog>}
+                {datTable && datTable.length > 0 &&
+                    <ScrollView>
+                        <View>
+                            <Card containerStyle={{backgroundColor: 'white'}}>
+                                <Card.Title style={{color: 'black'}}>Resumen de Servicios</Card.Title>
+                                {datTable &&
+                                    <Table>
+                                        <Row data={["Cantidad", "Servicio"]} style={styles.HeadStyle}
+                                             textStyle={{color: '#fff'}}></Row>
+                                        <Rows data={datTable.map((record) => [record.cantidad, record.servicio])}
+                                              style={styles.TableText}></Rows>
+                                    </Table>}
 
-                    }
-           </View>
-                </ScrollView>
-            }
-        </View>
-    );
+                                <Text style={styles.horizontalText}>Total de kilometros: {km} </Text>
+                            </Card>
+
+                            <Card containerStyle={{backgroundColor: 'white'}}>
+                                <Card.Title style={{color: 'black'}}>Resumen por Moviles</Card.Title>
+                                {dataTableMovil.length > 0 &&
+                                    <Table>
+                                        <Row data={["Cantidad", "Movil"]} style={styles.HeadStyle}
+                                             textStyle={{color: '#fff'}}></Row>
+                                        <Rows data={dataTableMovil.map((record) => [record.cantidad, record.movil])}
+                                              style={styles.TableText}></Rows>
+                                    </Table>}
+                            </Card>
+
+
+                            <Card
+                                containerStyle={{backgroundColor: 'white'}}>
+                                <Card.Title style={{color: 'black'}}>Detalle del Tipo de Servicio</Card.Title>
+                                <Text>Seleccione el servicio</Text>
+                                <Controller name="type_service"
+                                            control={control}
+                                            render={({field: {onChange, onBlur, value}}) => (
+                                                <Dropdown data={tipeServicesInRange} labelField="label"
+                                                          valueField="value"
+                                                          onChange={item => {
+                                                              console.log(item);
+                                                              onChange(item.value);
+                                                              setTipoServicio(item.value);
+
+                                                          }
+                                                          }
+                                                          value={value}
+                                                />
+                                            )}
+                                            defaultValue={tipeServicesInRange[0].value}
+                                />
+                                <Button style={{marginTop: 10, height: 50}}
+                                        title={"Obtener detalles"}
+                                        onPress={obtenerDetalles}
+
+                                />
+                                <Card.Divider/>
+                                {detailServices.length > 0 &&
+                                    <Table>
+                                        <Row data={["Servicio", "Movil", "Fecha"]} style={styles.HeadStyle}
+                                             textStyle={{color: '#fff'}}></Row>
+                                        <Rows
+                                            data={detailServices.map((record) => [record.servicio, record.movil, record.fecha])}
+                                            style={styles.TableText}></Rows>
+                                    </Table>}
+
+                            </Card>
+                            {movilesInRange.length > 0 &&
+                                <Card
+                                    containerStyle={{backgroundColor: 'white'}}>
+                                    <Card.Title style={{color: 'black'}}>Detalle por Moviles</Card.Title>
+                                    <Text>Seleccione el movil</Text>
+                                    <Controller name="movil"
+                                                control={control}
+                                                render={({field: {onChange, onBlur, value}}) => (
+                                                    <Dropdown data={movilesInRange} labelField="label"
+                                                              valueField="value"
+                                                              onChange={item => {
+                                                                  console.log(item);
+                                                                  onChange(item.value);
+                                                                  setMovil(item.value);
+
+                                                              }
+                                                              }
+                                                              value={value}
+                                                    />
+                                                )}
+                                                defaultValue={movilesInRange[0].value}
+                                    />
+                                    <Button style={{marginTop: 10, height: 50}}
+                                            title={"Obtener detalles"}
+                                            onPress={obtenerDetallesMovil}
+
+                                    />
+                                    <Card.Divider/>
+                                    {resumenMoviles.length > 0 &&
+                                        <Table>
+                                            <Row data={["Detalle"]} style={styles.HeadStyle}
+                                                 textStyle={{color: '#fff'}}></Row>
+                                            <Rows data={resumenMoviles.map((record) => [record.detalle])}
+                                                  style={styles.TableText}></Rows>
+                                        </Table>}
+
+
+                                </Card>
+
+                            }
+                        </View>
+                    </ScrollView>
+                }
+            </View> }
+                { !isAdmin && <View style={{flex: 1}}>
+                <Card containerStyle={{backgroundColor: 'white'}}>
+                    <Text>No tiene acceso</Text>
+                </Card>
+            </View>}
+            </React.Fragment>
+        )
+
+
 }
 
 const styles = StyleSheet.create({
