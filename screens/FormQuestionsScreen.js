@@ -43,6 +43,7 @@ export default FormQuestions = (props) => {
                 const {data, error} = await supabase
                     .from('sections')
                     .select(`*, questions(question,id )`)
+                    .eq('form_id', 1)
                     .order('id', {ascending: true})
                     .order('id', {foreignTable: 'questions', ascending: true})
 
